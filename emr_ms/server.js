@@ -1,9 +1,10 @@
 import express from 'express'
-import routes from './src/routes.js'
+import routes from './src/routes/routes.js'
+// import cors from 'cors'
 const app = express()
-const cors = require('cors')
+// const cors = require('cors')
 
-app.use(cors())
+// app.use(cors())
 
 const PORT = process.env.PORT || 4000
 // allows us to parse json 
