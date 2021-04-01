@@ -1,12 +1,32 @@
 body {
   background-color:mistyrose;
+  margin: 24px;
+  font-family: Arial, Helvetica, sans-serif
 }
 ul {
   list-style-type: none;
 }
 
 li {
-  padding: 10px;
+  padding: 8px;
   font-family: Arial, Helvetica, sans-serif;
+  display: inline;
+}
+
+/* .inactive {
+  background-color: rgb(212, 226, 235); 
+} */
+
+.active-page {
+  background-color: lightblue;
+}
+
+form {
+  display: inline;
+  margin: 8px;
+}
+
+header {
+  padding: 16px;
   background-color: rgb(212, 226, 235);
 }
