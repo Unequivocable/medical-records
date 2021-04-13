@@ -19,7 +19,8 @@ USE `emr_group_c` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `emr_group_c`.`Patient` (
   `HealthCardNumberID` INT NOT NULL,
-  `Name` VARCHAR(255) NOT NULL,
+  `firstName` VARCHAR(255) NOT NULL,
+  `lastName` VARCHAR(255) NOT NULL,
   `Phone` VARCHAR(15) NULL,
   `Phone2` VARCHAR(15) NULL,
   `Email` VARCHAR(45) NULL,
@@ -41,7 +42,8 @@ COMMENT = '	';
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `emr_group_c`.`CareProvider` (
   `MedicalLicenseID` INT NOT NULL,
-  `Name` VARCHAR(255) NOT NULL,
+  `firstName` VARCHAR(255) NOT NULL,
+  `lastName` VARCHAR(255) NOT NULL,
   `Email` VARCHAR(45) NULL,
   `Area of Practice` VARCHAR(45) NULL,
   `Phone` VARCHAR(45) NULL,
@@ -130,7 +132,8 @@ CREATE TABLE IF NOT EXISTS `emr_group_c`.`Address` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `emr_group_c`.`EmergencyContact` (
   `PatientID` INT NOT NULL,
-  `Name` VARCHAR(255) NOT NULL,
+  `firstName` VARCHAR(255) NOT NULL,
+  `lastName` VARCHAR(255) NOT NULL,
   `Phone` VARCHAR(15) NULL,
   `Email` VARCHAR(45) NULL,
   `Relationship` VARCHAR(45) NOT NULL,
@@ -150,7 +153,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `emr_group_c`.`SuperAdmin` (
   `Email` VARCHAR(255) NOT NULL,
-  `Name` VARCHAR(45) NULL,
+  `firstName` VARCHAR(45) NULL,
+  `lastName` VARCHAR(45) NULL,
   `Phone` VARCHAR(15) NULL,
   `ActiveFlag` TINYINT NOT NULL DEFAULT 1,
   PRIMARY KEY (`Email`))
@@ -219,6 +223,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `emr_group_c`.`PatienttoCareProvider` (
   `PatientID` INT NOT NULL,
   `CareProviderID` INT NOT NULL,
+  `ActiveFlag` TINYINT NOT NULL DEFAULT 1,
   PRIMARY KEY (`PatientID`, `CareProviderID`),
   INDEX `CareProvidertoPatientID_idx` (`CareProviderID` ASC) VISIBLE,
   CONSTRAINT `PatienttoCareProviderID`
@@ -232,12 +237,6 @@ CREATE TABLE IF NOT EXISTS `emr_group_c`.`PatienttoCareProvider` (
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
-
-CREATE USER 'emr_site'@'localhost' IDENTIFIED WITH mysql_native_password BY 'site123';
-
-GRANT SELECT, INSERT, TRIGGER ON TABLE `emr_group_c`.* TO 'emr_site';
-
-FLUSH PRIVILEGES;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
