@@ -9,7 +9,7 @@ const CareProvider = () => {
       <Nav superadmin="true" careprovider="active-page"/>
       <Menu superadmin="true"/>
     </header>
-    <div>
+    <div className="main">
       <p>This is the test Care Provider Add/Edit/Search/View/Delete page</p>
     </div>
     </>

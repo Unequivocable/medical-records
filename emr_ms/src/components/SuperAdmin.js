@@ -7,7 +7,7 @@ const SuperAdmin = () => {
     <header>
       <Nav superadmin="true" superpanel="active-page" />
     </header>
-    <div>
+    <div className="main">
       <p>This is the test SuperAdmin Page.  It should be where SuperAdmin's are sent upon login.  It will have links to Patient and CareProvider screens.  Edit User?  Add SuperAdmin??</p>
     </div>
     </>

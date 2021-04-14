@@ -5,7 +5,7 @@ const Nav = (props) => {
   return (
     <nav>
       <ul>
-        <li className="inactive">
+        <li className="inactive logout">
           <NavLink to="/">Logout</NavLink>
         </li>
         {props.superadmin ?  
