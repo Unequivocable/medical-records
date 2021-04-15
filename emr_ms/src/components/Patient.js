@@ -46,8 +46,38 @@ const Patient = (props) => {
         ...data,
         [name]: value,
       });
+      console.log(event.target)
       console.log(data)
     }
+
+    const handleChange2 = (event) => {
+      const { name } = event.target;
+      setData({
+        ...data,
+        [name]: event.target.checked,
+      });
+      console.log(event.target.checked)
+      console.log(data)
+    }
+   
+    const handleSubmit = async (event) => {
+      event.preventDefault()
+      try {
+        const response = await axios({
+          method: "post",
+          url: "api/patient",
+          data: data
+          // headers: { Authorization: `Bearer ${token.token}` },
+        });
+        console.log(response);
+        alert("Data has been updated");
+      } catch (error) {
+        alert(error);
+        console.log(error);
+      }
+    }
+
+
 
   return (
     <>
@@ -57,10 +87,10 @@ const Patient = (props) => {
       <button onClick={()=>setEdit(!edit)}>Edit</button>
     </header>
     <div className="main">
-      <form className="patient">
+      <form className="patient" onSubmit={handleSubmit}>
 
         <label htmlFor="healthCardNum">Health Card Number:</label>
-        <input type="text" className={edit ? 'not-form' : 'form'} name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} onChange={handleChange} disabled={edit}/>
+        <input type="text" className='not-form' name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} disabled={true}/>
 
         <label htmlFor="firstName">First Name:</label>
         <input type="text" className={edit ? 'not-form' : 'form'} name="firstName" placeholder={data.firstName} value={data.firstName} onChange={handleChange} readOnly={edit}/>
@@ -85,7 +115,7 @@ const Patient = (props) => {
         <input type="date" className={edit ? 'not-form' : 'form'} name="BirthDate" placeholder={data.BirthDate} value={data.BirthDate} onChange={handleChange} readOnly={edit}/>
 
         <label htmlFor="Gender">Gender:</label>
-        <select name="Gender" defaultValue={data.Gender} className={edit ? 'not-form' : 'form'} onChange={handleChange} readOnly={edit}>
+        <select name="Gender" defaultValue={data.Gender} value={data.Gender} className={edit ? 'not-form' : 'form'} onChange={handleChange} readOnly={edit}>
           <option value="M">Male</option>
           <option value="F">Female</option>
           <option value="O">Other</option>
@@ -98,8 +128,8 @@ const Patient = (props) => {
         <input type="text" name="InsuranceProvider" className={edit ? 'not-form' : 'form'} placeholder={data.InsuranceProvider} value={data.InsuranceProvider} onChange={handleChange} readOnly={edit}/>
 
         <label htmlFor="Smoker">Smoker:</label>
-        <input type="checkbox" name="Smoker" className={edit ? 'not-form' : 'form'} onChange={handleChange} value={data.Smoker} readOnly={edit}/>
-
+        <input type="checkbox" name="Smoker" className={edit ? 'not-form' : 'form'} onChange={handleChange2} value='1' readOnly={edit}/>
+        <input type="submit" />
       </form>
 
     </div>

@@ -12,4 +12,18 @@ router.get("/api/patient", (req, res) => {
 
 })
 
+router.post("/api/patient", async (req, res, next) => {
+    try {
+        db.query('UPDATE patient SET ? WHERE HealthCardNumberID = ?', 
+        [req.body, req.body.HealthCardNumberID], function (error, results, fields){
+            if (error) throw error;
+            console.log("finished patient update");
+            return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
+
 export default router

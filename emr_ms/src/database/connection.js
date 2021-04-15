@@ -5,6 +5,7 @@ const connection = mysql.createConnection({
   user     : 'emr_site',
   password : 'site123',
   database : 'emr_group_c',
+  dateStrings: true
   // port     : '3000'
 });
  
