@@ -19,6 +19,8 @@ const Patient = (props) => {
     InsuranceProvider: "Manulife Financial",
     Smoker: true
     });
+    // const [changes, setChanges] = useState([ 'HealthCardNumberID' ]);
+    // const [postData, setPostData] = useState({});
 
     useEffect(() => {
       const getData = async () => {
@@ -46,8 +48,9 @@ const Patient = (props) => {
         ...data,
         [name]: value,
       });
-      console.log(event.target)
       console.log(data)
+      // setChanges([...changes, name]);
+      // console.log(changes)
     }
 
     const handleChange2 = (event) => {
@@ -56,12 +59,23 @@ const Patient = (props) => {
         ...data,
         [name]: event.target.checked,
       });
-      console.log(event.target.checked)
-      console.log(data)
+      // setChanges([...changes, name]);
     }
-   
+
+
+    // const sendData = (input, fields) => {
+    //     fields.forEach(column => {
+    //       if(input[column]){
+    //         setPostData({...postData, [column]: input[column] })
+    //       }
+    //   })
+    // }
+
+    
+    
     const handleSubmit = async (event) => {
       event.preventDefault()
+      // sendData(data, changes);
       try {
         const response = await axios({
           method: "post",
@@ -128,7 +142,7 @@ const Patient = (props) => {
         <input type="text" name="InsuranceProvider" className={edit ? 'not-form' : 'form'} placeholder={data.InsuranceProvider} value={data.InsuranceProvider} onChange={handleChange} readOnly={edit}/>
 
         <label htmlFor="Smoker">Smoker:</label>
-        <input type="checkbox" name="Smoker" className={edit ? 'not-form' : 'form'} onChange={handleChange2} value='1' readOnly={edit}/>
+        <input type="checkbox" name="Smoker" className={edit ? 'not-form' : 'form'} onChange={handleChange2} checked={data.Smoker} readOnly={edit}/>
         <input type="submit" />
       </form>
 
