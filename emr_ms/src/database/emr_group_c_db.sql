@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `emr_group_c`.`CareProvider` (
   `firstName` VARCHAR(255) NOT NULL,
   `lastName` VARCHAR(255) NOT NULL,
   `Email` VARCHAR(45) NULL,
-  `Area of Practice` VARCHAR(45) NULL,
+  `AreaofPractice` VARCHAR(45) NULL,
   `Phone` VARCHAR(45) NULL,
   `ActiveFlag` TINYINT NOT NULL DEFAULT 1,
   PRIMARY KEY (`MedicalLicenseID`))

@@ -90,7 +90,7 @@ INSERT INTO `emr_group_c`.`careprovider`
 `firstName`,
 `lastName`,
 `Email`,
-`Area of Practice`,
+`AreaofPractice`,
 `Phone`,
 `ActiveFlag`)
 VALUES
@@ -107,7 +107,7 @@ INSERT INTO `emr_group_c`.`careprovider`
 `firstName`,
 `lastName`,
 `Email`,
-`Area of Practice`,
+`AreaofPractice`,
 `Phone`,
 `ActiveFlag`)
 VALUES
