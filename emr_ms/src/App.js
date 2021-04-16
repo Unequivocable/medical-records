@@ -3,10 +3,10 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Home from "./components/Home";
 import Error from "./components/Error";
 import './App.css';
-import Patient from './components/Patient';
+import Patient from './components/Patient/Patient';
 import SuperAdmin from './components/SuperAdmin';
-import CareProvider from './components/CareProvider';
-import LoginContext from './components/sub-components/Context'
+import CareProvider from './components/CareProvider/CareProvider';
+import { LoginContext } from './components/sub-components/Context'
 
 const App = () => {
   const [username, setUsername] = useState("");
