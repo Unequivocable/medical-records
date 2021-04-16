@@ -5,7 +5,6 @@ const Home = () => {
   return (
     <div className="login">
       <h1>Login</h1>
-      {/*Login as Care Provider sends to Patient Page only.  Login as SuperAdmin sends to SuperAdmin panel.*/}
       <form>
         <input type="text" placeholder="username" name="username"/> 
         <input type="password" placeholder="password" name="password"/>   
