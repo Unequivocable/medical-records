@@ -1,10 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Menu from "./sub-components/Menu";
 import Nav from './sub-components/Nav';
 import axios from 'axios';
+import { PatientContext, LoginContext } from './sub-components/Context'
 
 const Patient = (props) => {
+  // Imports any of the App level Login variables
+  const { token } = useContext(LoginContext);
+
+  //  Sets ability to edit on or off -- this needs to be in the edit page component so may need to be moved
   const [edit, setEdit] = useState(false);
+
+  //  Data is where the GET import of details is stored.  useState default needs to match column names in DB with initial values in it.
   const [data, setData] = useState({
     HealthCardNumberID:"Health Card Number", 
     firstName: "First Name",
@@ -19,8 +26,12 @@ const Patient = (props) => {
     InsuranceProvider: "Manulife Financial",
     Smoker: true
     });
-    // const [changes, setChanges] = useState([ 'HealthCardNumberID' ]);
-    // const [postData, setPostData] = useState({});
+
+// Changes is an array that contains only fields that have changed.  Is used to only send changed fields to DB as well as to add into Revision Details.  Default state needs to contian primary ID.
+    const [changes, setChanges] = useState([ 'HealthCardNumberID' ]);
+  
+// postData is the filtered data of any changed fields that will be sent to the DB.
+    const [postData, setPostData] = useState({});
 
     useEffect(() => {
       const getData = async () => {
@@ -40,8 +51,7 @@ const Patient = (props) => {
       getData();
     }, []);
 
-
-
+// On all inputs in form (except checkbox) handleChange will add the new value to 'data' and record the changed field in 'changes'
     const handleChange = (event) => {
       const { name, value } = event.target;
       setData({
@@ -49,33 +59,34 @@ const Patient = (props) => {
         [name]: value,
       });
       console.log(data)
-      // setChanges([...changes, name]);
-      // console.log(changes)
+      setChanges([...changes, name]);
+      console.log(changes)
     }
 
-    const handleChange2 = (event) => {
+// Handles the checkbox changes adding to 'data' and 'changes'
+    const handleChangeCheckbox = (event) => {
       const { name } = event.target;
       setData({
         ...data,
         [name]: event.target.checked,
       });
-      // setChanges([...changes, name]);
+      setChanges([...changes, name]);
     }
 
+// To be run before submitting changes.  This looks at 'data' and changed fields in 'changes' and makes a new object 'postData' that only has changed values in it.
+    const sendData = (formData, columns) => {
+        columns.forEach(column => {
+          if(formData[column]){
+            setPostData({...postData, [column]: formData[column] })
+          }
+      })
+    }
+ 
 
-    // const sendData = (input, fields) => {
-    //     fields.forEach(column => {
-    //       if(input[column]){
-    //         setPostData({...postData, [column]: input[column] })
-    //       }
-    //   })
-    // }
-
-    
-    
+//Submits the form data after running 'sendData' to create the final object of changed data.    
     const handleSubmit = async (event) => {
       event.preventDefault()
-      // sendData(data, changes);
+      sendData(data, changes);
       try {
         const response = await axios({
           method: "post",
@@ -94,7 +105,15 @@ const Patient = (props) => {
 
 
   return (
-    <>
+
+    // Any component within the context Provider wrapper will have access to the state variables entered here
+
+    <PatientContext.Provider
+      value={{
+        data,
+        changes
+      }}
+    >
     <header>
       <Nav superadmin={props.location.superadmin} patient="active-page"/>
       <Menu superadmin={props.location.superadmin}/>
@@ -142,13 +161,13 @@ const Patient = (props) => {
         <input type="text" name="InsuranceProvider" className={edit ? 'not-form' : 'form'} placeholder={data.InsuranceProvider} value={data.InsuranceProvider} onChange={handleChange} readOnly={edit}/>
 
         <label htmlFor="Smoker">Smoker:</label>
-        <input type="checkbox" name="Smoker" className={edit ? 'not-form' : 'form'} onChange={handleChange2} checked={data.Smoker} readOnly={edit}/>
+        <input type="checkbox" name="Smoker" className={edit ? 'not-form' : 'form'} onChange={handleChangeCheckbox} checked={data.Smoker} readOnly={edit}/>
         <input type="submit" />
       </form>
 
     </div>
 
-    </>
+    </PatientContext.Provider>
   );
 };
 
