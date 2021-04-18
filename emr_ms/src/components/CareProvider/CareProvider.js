@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import Nav from '../sub-components/Nav'
 import Menu from '../sub-components/Menu'
 import { BrowserRouter, Route, Switch } from "react-router-dom";
@@ -14,7 +14,7 @@ const CareProvider = () => {
   //  Sets ability to edit on or off -- this needs to be in the edit page component so may need to be moved
     const [edit, setEdit] = useState(false);
 
-  //  Data is where the GET import of details is stored.  useState default needs to match column names in DB with initial values in it.  Still need to add in temp data for Care Provider fields for this page
+  //  Data is where the GET import of details is stored.  useState default needs to match column names in DB with initial values in it.  
   const [data, setData] = useState({
     MedicalLicenseID: 'MedicalLicenseID',
     firstName: "First Name",
@@ -33,21 +33,28 @@ const CareProvider = () => {
   return (
         // Any component within the context Provider wrapper will have access to the state variables entered here
     <CareProviderContext.Provider
-      values= {{
+      value= {{
         data,
-        changes
+        setData,
+        changes,
+        setChanges,
+        edit,
+        setEdit,
+        postData,
+        setPostData
       }}
     >
     <header>
       <Nav superadmin="true" careprovider="active-page"/>
       <Menu superadmin="true"/>
+      <button onClick={()=>setEdit(!edit)}>Edit</button>
     </header>
     <div className="main">
     <BrowserRouter>
         <Switch>
           <Route exact path="/careprovider" component={CareSearch} />
-          <Route path="/cpadd" component={CareAdd} />
-          <Route path="/cpread" component={CareReadEdit} />
+          <Route path="/careadd" component={CareAdd} />
+          <Route path="/careread" component={CareReadEdit} />
         </Switch>
       </BrowserRouter>
       <p>This is the test Care Provider Add/Edit/Search/View/Delete page</p>

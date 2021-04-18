@@ -8,7 +8,7 @@ const {
     postData, setPostData, 
     changes, setChanges, 
     edit } = useContext(PatientContext)
-// const { careID, adminID } = useContext(LoginContext)
+const { careID, adminID } = useContext(LoginContext)
 
 
 useEffect(() => {

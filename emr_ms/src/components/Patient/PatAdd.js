@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const PatAdd = () => {
     const { data, setData } = useContext(PatientContext)
-    // const { careID, adminID } = useContext(LoginContext)
+    const { careID, adminID } = useContext(LoginContext)
     
     
     // On all inputs in form (except checkbox) handleChange will add the new value to 'data' 
