@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 import Nav from '../sub-components/Nav'
-import Menu from '../sub-components/Menu'
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { CareProviderContext, LoginContext } from '../sub-components/Context'
 import CareReadEdit from "./CareReadEdit";
@@ -12,7 +11,7 @@ const CareProvider = () => {
   const { token } = useContext(LoginContext);
 
   //  Sets ability to edit on or off -- this needs to be in the edit page component so may need to be moved
-    const [edit, setEdit] = useState(false);
+    const [edit, setEdit] = useState(true);
 
   //  Data is where the GET import of details is stored.  useState default needs to match column names in DB with initial values in it.  
   const [data, setData] = useState({
@@ -46,8 +45,6 @@ const CareProvider = () => {
     >
     <header>
       <Nav superadmin="true" careprovider="active-page"/>
-      <Menu superadmin="true"/>
-      <button onClick={()=>setEdit(!edit)}>Edit</button>
     </header>
     <div className="main">
     <BrowserRouter>
@@ -57,7 +54,6 @@ const CareProvider = () => {
           <Route path="/careread" component={CareReadEdit} />
         </Switch>
       </BrowserRouter>
-      <p>This is the test Care Provider Add/Edit/Search/View/Delete page</p>
     </div>
     </CareProviderContext.Provider>
   );
