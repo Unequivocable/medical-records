@@ -1,6 +1,8 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { PatientContext, LoginContext } from '../sub-components/Context';
 import axios from 'axios';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
 
 const PatReadEdit = () => {
 const { 
@@ -78,6 +80,8 @@ useEffect(() => {
     }
   }
 
+  const [tabIndex, setTabIndex] = useState(0);
+
     return (
         <>
       <form className="patient" onSubmit={handleSubmit}>
@@ -124,6 +128,28 @@ useEffect(() => {
         <input type="checkbox" name="Smoker" className={edit ? 'not-form' : 'form'} onChange={handleChangeCheckbox} checked={data.Smoker} readOnly={edit}/>
         <input type="submit" />
       </form>
+
+      <Tabs selectedIndex={tabIndex} onSelect={index => setTabIndex(index)}>
+      <TabList>
+        <Tab>Address</Tab>
+        <Tab>Emergency Contact</Tab>
+        <Tab>History</Tab>
+        <Tab>Patient Health Summary</Tab>
+      </TabList>
+      <TabPanel>
+      <p>Test 1</p>
+      </TabPanel>
+      <TabPanel>
+        <p>Test 2</p>
+      </TabPanel>
+      <TabPanel>
+        <p>Test 3</p>
+      </TabPanel>
+      <TabPanel>
+      <p>Test 4n</p>
+      </TabPanel>
+    </Tabs>
+  
 
         </>
     )
