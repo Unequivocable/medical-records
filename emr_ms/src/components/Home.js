@@ -1,13 +1,55 @@
-import React from "react";
-import { NavLink } from 'react-router-dom'
+import React, { useState, useContext } from 'react'
+import { useHistory, useLocation, NavLink } from 'react-router-dom'
+import { LoginContext } from './sub-components/Context'
+
+import axios from 'axios';
+
+//import { LoginContext } from './components/sub-components/Context'
 
 const Home = () => {
+    let history = useHistory();
+    let location = useLocation();
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [auth, setAuth] = useState(true)
+    //const [login, setLogin] = useContext(LoginContext)
+
+    const submit = async (e) => {
+        e.preventDefault()
+        const data = JSON.stringify({username, password})
+        const res = await axios({
+        method: 'post',
+        url: 'api/auth',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: data
+        })
+        .then(function (res){
+          sessionStorage.setItem('token', res.data.token)
+          //console.log(payload.data.results[0].Username)
+          //setLogin(payload.data)
+          let { from } = location.state || { from: { pathname: "/careprovider" } };
+          history.replace(from);
+          
+        })
+        .catch(function(res){
+          console.log(res)
+          setAuth(false)
+
+        })
+    }
+
   return (
     <div className="login">
+      {!auth &&
+        <h4>Incorrect Username or Password</h4>
+      }
       <h1>Login</h1>
-      <form>
-        <input type="text" placeholder="username" name="username"/> 
-        <input type="password" placeholder="password" name="password"/>   
+      <form className="contact-form" name="login" onSubmit={submit}>
+        <input type="text" placeholder="username" name="username" autoComplete="off" onChange={e => setUsername(e.target.value)}/> 
+        <input type="password" placeholder="password" name="password" onChange={e => setPassword(e.target.value)}/>
+        <input className="form-btn" type="submit" value="Login"/>
       </form>
       
       <NavLink to= {{

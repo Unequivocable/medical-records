@@ -3,6 +3,7 @@ import db from '../database/connection';
 import * as jwt from 'jsonwebtoken'
 const argon2 = require('argon2');
 
+
 const router = express.Router();
 
 // 
@@ -80,29 +81,32 @@ router.post("/api/careprovider/add", async (req, res, next) => {
 })
 
 
-router.get("/api/auth", (req, res) => {
+router.post("/api/auth", async (req, res, next) => {
     try{
-        const {username, password, superAdminID} = req.body
+        const {username, password} = req.body
 
         if (!username || !password){
-            return res.status(401).json({message: "incorrect credentials provided"})
+            return res.status(401).send({message: "incorrect credentials provided"})
         }
 
-        db.query('SELECT * FROM test WHERE Username = ?', [username], async function(error, results, fields) {
+        db.query('SELECT * FROM user WHERE Username = ?', [username], async function(error, results, fields) {
             if (error) throw error
-            if(!results || !(await argon2.verify(results[0].password, password))){
+
+            if(!results[0] || results[0].Password != password){
+            //if(!results || !(await argon2.verify(results[0].password, password))){
                 return res.status(401).json({message: "incorrect credentials provided"})
             } else {
                 const token = jwt.sign({username}, process.env.JWT_SECRET, {expiresIn: '5m'})
                 console.log("Logged in as: " + username);
-                if(superAdminID){
+                if(results[0].SuperAdminID){
                     console.log(username + " is also a SuperAdmin");
                 }
-                return res.send({token});          
+                return res.status(200).send({token, results});          
             }
         });
     } catch(err){
-        console.log(err)
+        console.log(err);
+        next(err);
     }
     // db.query('SELECT * FROM test', function (error, results, fields){
     //     if (error) throw error;
@@ -112,15 +116,15 @@ router.get("/api/auth", (req, res) => {
 })
 
 //use to add users through Postman with encrypted password. *Needed to use logIn later*.
-router.post('/api/users', async (req, res) => {
-    req.body.Password = await argon2.hash(req.body.Password)
-    const query = `INSERT INTO user VALUES (${req.body.CareProviderID}, '${req.body.SuperAdminID}', '${req.body.Username}', "${req.body.Password}", 1);`
-    await db.query(query,function(error, results, fields){
-        if (error) throw error
-        return res.status(201).send(results)
-    })
+// router.post('/api/users', async (req, res) => {
+//     req.body.Password = await argon2.hash(req.body.Password)
+//     const query = `INSERT INTO user VALUES (${req.body.CareProviderID}, '${req.body.SuperAdminID}', '${req.body.Username}', "${req.body.Password}", 1);`
+//     await db.query(query,function(error, results, fields){
+//         if (error) throw error
+//         return res.status(201).send(results)
+//     })
     
-})
+// })
 
 
 export default router
