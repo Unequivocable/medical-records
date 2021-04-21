@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import axios from 'axios';
 
 const PatSearch = () => {
-const { data, setData } = useContext(PatientContext)
+const { data, setData, setPostData, postData } = useContext(PatientContext)
 const { careID, adminID } = useContext(LoginContext)
 const [ search, setSearch ] = useState({
     HealthCardNumberID: "",
@@ -99,10 +99,16 @@ const handleSubmit = async (event) => {
     }
   }
 
+
+// This puts the HealthCardNumberID into postData, which will be read by the PatReadEdit page to do the retrieval of data on
+const addSwitch = (event) => {
+    setPostData({ HealthCardNumberID: event.target.id})
+}
+
+
     return (
         <>
-             <NavLink to="/add">Add</NavLink>
-             <NavLink to="/read">Read</NavLink>
+          <NavLink to="/add"><button>Add</button></NavLink><br/>
              <form className="patient" onSubmit={handleSubmit}>
                 <label htmlFor="HealthCardNumberID">Search by Health Card Number</label>
                     <input type="text" className='form' name="HealthCardNumberID" placeholder="Patient Health Card Number" value={search.HealthCardNumberID} onChange={handleChange}/>
@@ -116,7 +122,7 @@ const handleSubmit = async (event) => {
               <button onClick={searchAll}>Retrieve all valid Patients</button>
               {results.map((entry) => (
                  <div key={entry.HealthCardNumberID + entry.CareProviderID}>
-                    {entry.HealthCardNumberID} <br />
+                    <NavLink to="/read" onClick={addSwitch} id={entry.HealthCardNumberID}>{entry.HealthCardNumberID}</NavLink>
                     {entry.firstName} <br />
                     {entry.lastName} <br />
                     {entry.Phone} <br />

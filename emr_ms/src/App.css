@@ -71,7 +71,7 @@ form input{
 
 .not-form {
   border-style: solid;
-  border-width: 1px;
+  border-width: 2px;
   border-color: ivory;
   background-color: ivory;
 }
@@ -84,4 +84,9 @@ header {
 div {
   margin: 8px;
   padding: 8px;
+}
+
+:disabled {
+  color: black;
+  opacity: 1;
 }
