@@ -1,24 +1,23 @@
 import React, { useContext, useEffect } from 'react';
 import { CareProviderContext, LoginContext } from '../sub-components/Context';
 import axios from 'axios';
+import { NavLink } from 'react-router-dom';
 
 const CareReadEdit = () => {
 const { 
     data, setData, 
     postData, setPostData, 
     changes, setChanges, 
-    edit } = useContext(CareProviderContext)
+    edit, setEdit } = useContext(CareProviderContext)
 const { careID, adminID } = useContext(LoginContext)
-
+ 
 
 useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios({
-          method: "get",
-          url: "api/careprovider"
-          // headers: { Authorization: `Bearer ${token.token}` },
-        });
+        const response = await axios.get('api/careprovider', { params: postData }
+        // headers: { Authorization: `Bearer ${token.token}` },
+        );
         console.log(response)
         setData(response.data[0]);
       } catch (error) {
@@ -27,24 +26,14 @@ useEffect(() => {
       }
     };
     getData();
-  }, [ setData ]);
+  }, [ postData, setData ]);
 
-// On all inputs in form (except checkbox) handleChange will add the new value to 'data' and record the changed field in 'changes'
+// On all inputs in form handleChange will add the new value to 'data' and record the changed field in 'changes'
   const handleChange = (event) => {
     const { name, value } = event.target;
     setData({
       ...data,
       [name]: value,
-    });
-    setChanges([...changes, name]);
-  }
-
-// Handles the checkbox changes adding to 'data' and 'changes'
-  const handleChangeCheckbox = (event) => {
-    const { name } = event.target;
-    setData({
-      ...data,
-      [name]: event.target.checked,
     });
     setChanges([...changes, name]);
   }
@@ -80,10 +69,13 @@ useEffect(() => {
 
     return (
         <>
+         <NavLink to="/careadd"><button>Add</button></NavLink>
+         <button onClick={()=>setEdit(!edit)}>Edit</button>
+         <NavLink to="/careprovider"><button>Search</button></NavLink>
       <form className="patient" onSubmit={handleSubmit}>
 
-        <label htmlFor="healthCardNum">Health Card Number:</label>
-        <input type="text" className='not-form' name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} disabled={true}/>
+        <label htmlFor="MedicalLicenseID">MedicalLicenseID:</label>
+        <input type="text" className='not-form' name="MedicalLicenseID" placeholder={data.MedicalLicenseID} value={data.MedicalLicenseID} disabled={true}/>
 
         <label htmlFor="firstName">First Name:</label>
         <input type="text" className={edit ? 'not-form' : 'form'} name="firstName" placeholder={data.firstName} value={data.firstName} onChange={handleChange} readOnly={edit}/>
@@ -94,35 +86,15 @@ useEffect(() => {
         <label htmlFor="Phone">Phone:</label>
         <input type="phone" className={edit ? 'not-form' : 'form'} name="Phone" placeholder={data.Phone}  value={data.Phone} onChange={handleChange} readOnly={edit}/>
 
-        <label htmlFor="Phone2">Phone2:</label>
-        <input type="phone" className={edit ? 'not-form' : 'form'} name="Phone2" placeholder={data.Phone2}
-        value={data.Phone2 ? data.Phone2 : "123456789"} onChange={handleChange} readOnly={edit}/>
-
         <label htmlFor="Email">Email:</label>
-        <input type="email" className={edit ? 'not-form' : 'form'} name="Email" placeholder={data.Email} value={data.Email} onChange={handleChange} readOnly={edit}/>
+        <input type="phone" className={edit ? 'not-form' : 'form'} name="Email" placeholder={data.Email}
+        value={data.Email} onChange={handleChange} readOnly={edit}/>
 
-        <label htmlFor="Language">Language:</label>
-        <input type="text" className={edit ? 'not-form' : 'form'} name="Language" placeholder={data.Language} value={data.Language} onChange={handleChange} readOnly={edit}/>
+        <label htmlFor="AreaofPractice">AreaofPractice:</label>
+        <input type="email" className={edit ? 'not-form' : 'form'} name="AreaofPractice" placeholder={data.AreaofPractice} value={data.AreaofPractice} onChange={handleChange} readOnly={edit}/>
 
-        <label htmlFor="BirthDate">Date of Birth:</label>
-        <input type="date" className={edit ? 'not-form' : 'form'} name="BirthDate" placeholder={data.BirthDate} value={data.BirthDate} onChange={handleChange} readOnly={edit}/>
-
-        <label htmlFor="Gender">Gender:</label>
-        <select name="Gender" defaultValue={data.Gender} value={data.Gender} className={edit ? 'not-form' : 'form'} onChange={handleChange} readOnly={edit}>
-          <option value="M">Male</option>
-          <option value="F">Female</option>
-          <option value="O">Other</option>
-        </select>
-
-        <label htmlFor="EthnicBackground">Ethnic Background:</label>
-        <input type="text" name="EthnicBackground" className={edit ? 'not-form' : 'form'} placeholder={data.EthnicBackground} value={data.EthnicBackground} onChange={handleChange} readOnly={edit}/>
-
-        <label htmlFor="InsuranceProvider">Insurance Provider:</label>
-        <input type="text" name="InsuranceProvider" className={edit ? 'not-form' : 'form'} placeholder={data.InsuranceProvider} value={data.InsuranceProvider} onChange={handleChange} readOnly={edit}/>
-
-        <label htmlFor="Smoker">Smoker:</label>
-        <input type="checkbox" name="Smoker" className={edit ? 'not-form' : 'form'} onChange={handleChangeCheckbox} checked={data.Smoker} readOnly={edit}/>
-        <input type="submit" />
+        
+        {!edit ? <input type="submit" /> : null}
       </form>
 
         </>
