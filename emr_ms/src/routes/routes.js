@@ -129,6 +129,8 @@ router.post("/api/careprovider/delete", async (req, res, next) => {
 })
 
 
+// Patient and Care Provider XREF table search and update routes
+
 router.get("/api/p2c/patient", (req, res) => {
     let query = () => {
         if(req.query.CareProviderID) {
@@ -177,6 +179,8 @@ router.get("/api/p2c/all", (req, res) => {
 
 })
 
+// Care Provider Search routes
+
 router.get("/api/cp/medicalID", (req, res) => {
     db.query('SELECT MedicalLicenseID, firstName, lastName, Phone, Email FROM careprovider WHERE ActiveFlag = 1 AND MedicalLicenseID = ?', [req.query.MedicalLicenseID], function (error, results, fields){
         if (error) throw error;
@@ -202,6 +206,33 @@ router.get("/api/cp/all", (req, res) => {
         return res.status(200).send(results);
     })
 
+})
+
+// Revision Details Read and Adds
+
+router.get("/api/revision", (req, res) => {
+    console.log(req.query)
+    const query = `SELECT * FROM revisiondetails  WHERE PatientID = ${req.query.HealthCardNumberID} ORDER BY Timestamp DESC LIMIT ${req.query.limit} OFFSET ${req.query.offset}`
+    
+    db.query(query, function (error, results, fields){
+        if (error) throw error;
+        console.log("finished search");
+        return res.status(200).send(results);
+    })
+
+})
+
+router.post("/api/revision/add", async (req, res, next) => {
+    try {
+        db.query('INSERT INTO revisiondetails SET ?', [req.body], function (error, results, fields){
+            if (error) throw error;
+            console.log("finished revisiondetails add");
+            return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
 })
 
 export default router

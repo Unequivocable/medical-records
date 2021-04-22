@@ -105,8 +105,6 @@ const addSwitch = (event) => {
                     {entry.Phone} <br />
                     {entry.Email} <br />
                 </div>))}
-
-
         </>
     )
 }
