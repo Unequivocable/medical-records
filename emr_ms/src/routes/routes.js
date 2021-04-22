@@ -41,6 +41,20 @@ router.post("/api/patient/add", async (req, res, next) => {
     }
 })
 
+router.post("/api/p2c/patient/add", async (req, res, next) => {
+    console.log(req.body)
+    try {
+        db.query('INSERT INTO patienttocareprovider (CareProviderID, PatientID, ActiveFlag) VALUES ?', [req.body], function (error, results, fields){
+            if (error) throw error;
+            console.log("finished patienttocareprovider add");
+            return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
+
 router.get("/api/careprovider", (req, res) => {
     db.query('SELECT * FROM careprovider WHERE ActiveFlag = 1 AND MedicalLicenseID = ?', [req.query.MedicalLicenseID], function (error, results, fields){
         if (error) throw error;
