@@ -90,3 +90,7 @@ div {
   color: black;
   opacity: 1;
 }
+
+button {
+  height: 24px;
+}
