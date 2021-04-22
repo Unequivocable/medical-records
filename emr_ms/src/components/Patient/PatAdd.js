@@ -97,9 +97,9 @@ searchAll()
             data: revisionDetails
             // headers: { Authorization: `Bearer ${token.token}` },
           });
+            console.log(rdAdd);
             console.log(patientAdd);
             console.log(p2cAdd);
-            console.log(rdAdd);
             alert("Data has been added");
             setSubmitted(true)
           } catch (error) {
@@ -107,6 +107,7 @@ searchAll()
           console.log(error);
         }
       }
+
 
       const handleSelect = (event) => {
         let value = Array.from(event.target.selectedOptions, option => option.value);
