@@ -3,7 +3,7 @@ import db from '../database/connection';
 
 const router = express.Router();
 
-// 
+//Read, Edit, Add and Delete routes for primary Patient table
 
 router.get("/api/patient", (req, res) => {
     db.query('SELECT * FROM patient WHERE ActiveFlag = 1 AND HealthCardNumberID = ?', [req.query.HealthCardNumberID], function (error, results, fields){
@@ -41,6 +41,42 @@ router.post("/api/patient/add", async (req, res, next) => {
     }
 })
 
+router.post("/api/patient/delete", async (req, res, next) => {
+    
+
+// UPDATE patient SET ? WHERE HealthCardNumberID = ?
+    try {
+        db.query(
+            "UPDATE patient, patienttocareprovider SET patient.ActiveFlag = 0, patienttocareprovider.ActiveFlag = 0 WHERE        patient.HealthCardNumberID = ? AND patienttocareprovider.PatientID = ?;",[req.body.HealthCardNumberID, req.body.HealthCardNumberID],
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log("finished patient delete update");
+              return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
+
+// Add Patient/Care Provider XREF data route to patienttocareprovider table during patient add process.
+
+router.post("/api/p2c/patient/add", async (req, res, next) => {
+    console.log(req.body)
+    try {
+        db.query('INSERT INTO patienttocareprovider (CareProviderID, PatientID, ActiveFlag) VALUES ?', [req.body], function (error, results, fields){
+            if (error) throw error;
+            console.log("finished patienttocareprovider add");
+            return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
+
+// Read, Edit, Add and Delete routes for primary Patient table
+
 router.get("/api/careprovider", (req, res) => {
     db.query('SELECT * FROM careprovider WHERE ActiveFlag = 1 AND MedicalLicenseID = ?', [req.query.MedicalLicenseID], function (error, results, fields){
         if (error) throw error;
@@ -77,6 +113,20 @@ router.post("/api/careprovider/add", async (req, res, next) => {
     }
 })
 
+router.post("/api/careprovider/delete", async (req, res, next) => {
+    try {
+        db.query(
+            "UPDATE careprovider, patienttocareprovider SET careprovider.ActiveFlag = 0, patienttocareprovider.ActiveFlag = 0 WHERE careprovider.MedicalLicenseID = ? AND patienttocareprovider.CareProviderID = ?;",[req.body.MedicalLicenseID, req.body.MedicalLicenseID],
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log("finished care provider delete update");
+              return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
 
 
 router.get("/api/p2c/patient", (req, res) => {
