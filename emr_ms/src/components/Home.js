@@ -12,7 +12,9 @@ const Home = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [auth, setAuth] = useState(true)
-    //const [login, setLogin] = useContext(LoginContext)
+    const {setToken} = useContext(LoginContext);
+    const {setCareID} = useContext(LoginContext);
+    const {setAdminID} = useContext(LoginContext);
 
     const submit = async (e) => {
         e.preventDefault()
@@ -26,12 +28,19 @@ const Home = () => {
         data: data
         })
         .then(function (res){
-          sessionStorage.setItem('token', res.data.token)
+          //sessionStorage.setItem('token', res.data.token)
           //console.log(payload.data.results[0].Username)
-          //setLogin(payload.data)
-          let { from } = location.state || { from: { pathname: "/careprovider" } };
-          history.replace(from);
-          
+          setToken(res.data.token);
+
+          if (res.data.results[0].SuperAdminID == null){
+            setCareID(res.data.results[0].CareProviderID);  
+            let { from } = location.state || { from: { pathname: "/careprovider/" + res.data.results[0].Username } };
+            history.replace(from);
+          } else {
+            setAdminID(res.data.results[0].SuperAdminID);  
+            let { from } = location.state || { from: { pathname: "/superpanel/" + res.data.results[0].Username} };
+            history.replace(from);
+          }
         })
         .catch(function(res){
           console.log(res)
