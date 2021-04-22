@@ -65,7 +65,7 @@ const handleSubmit = async (event) => {
       setSearch({
         HealthCardNumberID: "",
         lastName: "",
-        CareProviderID: "",
+        CareProviderID: careID
     })
     } catch (error) {
       alert(error);
@@ -109,7 +109,7 @@ const addSwitch = (event) => {
 
     return (
         <>
-          <NavLink to="/add"><button>Add</button></NavLink><br/>
+          {adminID ? <><NavLink to="/add"><button>Add</button></NavLink><br/></> : null}
              <form className="patient" onSubmit={handleSubmit}>
                 <label htmlFor="HealthCardNumberID">Search by Health Card Number</label>
                     <input type="text" className='form' name="HealthCardNumberID" placeholder="Patient Health Card Number" value={search.HealthCardNumberID} onChange={handleChange}/>

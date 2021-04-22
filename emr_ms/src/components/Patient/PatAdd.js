@@ -6,7 +6,7 @@ import { NavLink, Redirect } from 'react-router-dom'
 const PatAdd = () => {
     // const { data, setData } = useContext(PatientContext)
     const { setPostData } = useContext(PatientContext)
-    const { careID, adminID } = useContext(LoginContext)
+    const { adminID } = useContext(LoginContext)
     const [ newData, setNewData ] = useState({
       HealthCardNumberID:"", 
       firstName: "",
@@ -72,7 +72,7 @@ searchAll()
         let revisionDetails = ({
           PatientID: newData.HealthCardNumberID,
           CareProviderID: null,
-          SuperAdminID: "super@admin.com",
+          SuperAdminID: adminID,
           RevisionDetails: "Added New Patient" 
         })
         let newCP = [] 
