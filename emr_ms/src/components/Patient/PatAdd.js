@@ -28,7 +28,7 @@ const PatAdd = () => {
       lastName: ""
     }])
     const [ cpArray, setCpArray ] = useState([])
-    const [ sendCP, setSendCP ] = useState([])
+
 
 useEffect (() => {
   const searchAll = async () => {
@@ -66,14 +66,11 @@ searchAll()
       }
     
     
-    //Submits all form data and then sends the primary key to postData and redirects to the add/edit page.  Add/edit page will do a new retrival from DB of the newly added entry based on postData ID.
+    //Submits all form data and then sends the primary key to postData and redirects to the add/edit page.  Add/edit page will do a new retrival from DB of the newly added entry based on postData ID.  The newCP array sends the selected Care Providers to the XREF table in it's own request.
       const handleSubmit = async (event) => {
         event.preventDefault()  
-        console.log(cpArray)  
         let newCP = [] 
         cpArray.forEach(cp => newCP = ([ ...newCP, [cp, newData.HealthCardNumberID, 1]]));
-        // cpArray.forEach(cp => setSendCP([ ...sendCP, [cp, event.target.id, 1]]));
-        console.log(newCP)
         try {
           setPostData({ HealthCardNumberID: newData.HealthCardNumberID });
           const patientAdd = await axios({
@@ -91,7 +88,6 @@ searchAll()
             console.log(patientAdd);
             console.log(p2cAdd);
             alert("Data has been added");
-
             setSubmitted(true)
           } catch (error) {
           alert(error);
