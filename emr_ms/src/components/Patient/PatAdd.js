@@ -69,6 +69,12 @@ searchAll()
     //Submits all form data and then sends the primary key to postData and redirects to the add/edit page.  Add/edit page will do a new retrival from DB of the newly added entry based on postData ID.  The newCP array sends the selected Care Providers to the XREF table in it's own request.
       const handleSubmit = async (event) => {
         event.preventDefault()  
+        let revisionDetails = ({
+          PatientID: newData.HealthCardNumberID,
+          CareProviderID: null,
+          SuperAdminID: "super@admin.com",
+          RevisionDetails: "Added New Patient" 
+        })
         let newCP = [] 
         cpArray.forEach(cp => newCP = ([ ...newCP, [cp, newData.HealthCardNumberID, 1]]));
         try {
@@ -85,6 +91,13 @@ searchAll()
             data: newCP
             // headers: { Authorization: `Bearer ${token.token}` },
           });
+          const rdAdd = await axios({
+            method: "post",
+            url: "api/revision/add",
+            data: revisionDetails
+            // headers: { Authorization: `Bearer ${token.token}` },
+          });
+            console.log(rdAdd);
             console.log(patientAdd);
             console.log(p2cAdd);
             alert("Data has been added");
@@ -157,6 +170,7 @@ searchAll()
 
             <input type="submit" />
           </form>
+
         </>
     )
 }
