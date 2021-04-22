@@ -105,10 +105,10 @@ useEffect(() => {
     return (
         <>
          {deleted ? <Redirect to="/patient" /> : null}
-      <NavLink to="/add"><button>Add</button></NavLink>
+      {adminID ? <><NavLink to="/add"><button>Add</button></NavLink><button onClick={handleDelete} id={data.HealthCardNumberID}>Delete</button></> : null }
       <NavLink to="/patient"><button>Search</button></NavLink>
       <button onClick={()=>setEdit(!edit)}>Edit</button>
-      <button onClick={handleDelete} id={data.HealthCardNumberID}>Delete</button>
+
       <form className="patient" onSubmit={handleSubmit}>
         <label htmlFor="healthCardNum">Health Card Number:</label>
         <input type="text" className='not-form' name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} disabled={true}/>

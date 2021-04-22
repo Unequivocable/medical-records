@@ -7,8 +7,8 @@ import axios from 'axios';
 //import { LoginContext } from './components/sub-components/Context'
 
 const Home = () => {
-    let history = useHistory();
-    let location = useLocation();
+    // let history = useHistory();
+    // let location = useLocation();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [auth, setAuth] = useState(true)
@@ -62,11 +62,11 @@ const Home = () => {
       </form>
       { careID ? <Redirect to="/patient" /> : null }
       { adminID ? <Redirect to="/superpanel" /> : null }
-      <NavLink to= {{
+      {/* <NavLink to= {{
             pathname: "/patient",
             superadmin: false
             }}>Login as Care Provider</NavLink>
-      <NavLink to="/superpanel">Login as SuperAdmin</NavLink>
+      <NavLink to="/superpanel">Login as SuperAdmin</NavLink> */}
     </div>
   );
 };
