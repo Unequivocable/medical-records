@@ -132,10 +132,12 @@ router.post("/api/careprovider/delete", async (req, res, next) => {
 })
 
 
+// Patient and Care Provider XREF table search and update routes
+
 router.get("/api/p2c/patient", (req, res) => {
     let query = () => {
         if(req.query.CareProviderID) {
-            return `SELECT patient.HealthCardNumberID, patient.firstName, patient.lastName, patient.Phone FROM patient JOIN patienttocareprovider ON patient.HealthCardNumberID = patienttocareprovider.PatientID WHERE patient.HealthCardNumberID = ${req.query.HealthCardNumberID} AND patienttocareprovider.CareProviderID = ${req.query.CareProviderID} AND patienttocareprovider.ActiveFlag = 1`
+            return `SELECT patient.HealthCardNumberID, patient.firstName, patient.lastName, patient.Phone, patienttocareprovider.CareProviderID FROM patient JOIN patienttocareprovider ON patient.HealthCardNumberID = patienttocareprovider.PatientID WHERE patient.HealthCardNumberID = ${req.query.HealthCardNumberID} AND patienttocareprovider.CareProviderID = ${req.query.CareProviderID} AND patienttocareprovider.ActiveFlag = 1`
         } else { 
             return `SELECT patient.HealthCardNumberID, patient.firstName, patient.lastName, patient.Phone, patienttocareprovider.CareProviderID FROM patient JOIN patienttocareprovider ON patient.HealthCardNumberID = patienttocareprovider.PatientID WHERE patient.HealthCardNumberID = ${req.query.HealthCardNumberID} AND patient.ActiveFlag = 1`
         }
@@ -151,7 +153,7 @@ router.get("/api/p2c/patient", (req, res) => {
 router.get("/api/p2c/name", (req, res) => {
     let query = () => {
         if(req.query.CareProviderID) {
-            return `SELECT patient.HealthCardNumberID, patient.firstName, patient.lastName, patient.Phone FROM patient JOIN patienttocareprovider ON patient.HealthCardNumberID = patienttocareprovider.PatientID WHERE patient.lastName = '${req.query.lastName}' AND patienttocareprovider.CareProviderID = ${req.query.CareProviderID} AND patienttocareprovider.ActiveFlag = 1`
+            return `SELECT patient.HealthCardNumberID, patient.firstName, patient.lastName, patient.Phone, patienttocareprovider.CareProviderID FROM patient JOIN patienttocareprovider ON patient.HealthCardNumberID = patienttocareprovider.PatientID WHERE patient.lastName = '${req.query.lastName}' AND patienttocareprovider.CareProviderID = ${req.query.CareProviderID} AND patienttocareprovider.ActiveFlag = 1`
         } else { 
             return `SELECT patient.HealthCardNumberID, patient.firstName, patient.lastName, patient.Phone, patienttocareprovider.CareProviderID FROM patient JOIN patienttocareprovider ON patient.HealthCardNumberID = patienttocareprovider.PatientID WHERE patient.lastName = '${req.query.lastName}' AND patient.ActiveFlag = 1`
         }
@@ -167,11 +169,12 @@ router.get("/api/p2c/name", (req, res) => {
 router.get("/api/p2c/all", (req, res) => {
     let query = () => {
         if(req.query.CareProviderID) {
-            return `SELECT patient.HealthCardNumberID, patient.firstName, patient.lastName, patient.Phone FROM patient JOIN patienttocareprovider ON patient.HealthCardNumberID = patienttocareprovider.PatientID WHERE patienttocareprovider.CareProviderID = ${req.query.CareProviderID} AND patienttocareprovider.ActiveFlag = 1`
+            return `SELECT patient.HealthCardNumberID, patient.firstName, patient.lastName, patient.Phone, patienttocareprovider.CareProviderID FROM patient JOIN patienttocareprovider ON patient.HealthCardNumberID = patienttocareprovider.PatientID WHERE patienttocareprovider.CareProviderID = ${req.query.CareProviderID} AND patienttocareprovider.ActiveFlag = 1`
         } else { 
             return `SELECT patient.HealthCardNumberID, patient.firstName, patient.lastName, patient.Phone, patienttocareprovider.CareProviderID FROM patient JOIN patienttocareprovider ON patient.HealthCardNumberID = patienttocareprovider.PatientID WHERE patient.ActiveFlag = 1`
         }
     }
+    console.log(req.query)
     db.query(query(), function (error, results, fields){
         if (error) throw error;
         console.log("finished search");
@@ -179,6 +182,8 @@ router.get("/api/p2c/all", (req, res) => {
     })
 
 })
+
+// Care Provider Search routes
 
 router.get("/api/cp/medicalID", (req, res) => {
     db.query('SELECT MedicalLicenseID, firstName, lastName, Phone, Email FROM careprovider WHERE ActiveFlag = 1 AND MedicalLicenseID = ?', [req.query.MedicalLicenseID], function (error, results, fields){
@@ -206,6 +211,35 @@ router.get("/api/cp/all", (req, res) => {
     })
 
 })
+
+// Revision Details Read and Adds
+
+router.get("/api/revision", (req, res) => {
+    console.log(req.query)
+    const query = `SELECT * FROM revisiondetails  WHERE PatientID = ${req.query.HealthCardNumberID} ORDER BY Timestamp DESC LIMIT ${req.query.limit} OFFSET ${req.query.offset}`
+    
+    db.query(query, function (error, results, fields){
+        if (error) throw error;
+        console.log("finished search");
+        return res.status(200).send(results);
+    })
+
+})
+
+router.post("/api/revision/add", async (req, res, next) => {
+    try {
+        db.query('INSERT INTO revisiondetails SET ?', [req.body], function (error, results, fields){
+            if (error) throw error;
+            console.log("finished revisiondetails add");
+            return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
+
+// Authorization routes
 
 router.post("/api/auth", async (req, res, next) => {
     try{

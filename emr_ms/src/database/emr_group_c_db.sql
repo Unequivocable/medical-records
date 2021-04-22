@@ -166,7 +166,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `emr_group_c`.`RevisionDetails` (
   `RevisionID` INT NOT NULL AUTO_INCREMENT,
-  `PatientID` INT NOT NULL,
+  `PatientID` INT NULL,
   `CareProviderID` INT NULL,
   `SuperAdminID` VARCHAR(45) NULL,
   `RevisionDetails` LONGTEXT NOT NULL,
@@ -202,8 +202,8 @@ CREATE TABLE IF NOT EXISTS `emr_group_c`.`User` (
   `Password` VARCHAR(255) NOT NULL,
   `ActiveFlag` TINYINT NOT NULL DEFAULT 1,
   INDEX `SuperAdminID_idx` (`SuperAdminID` ASC) VISIBLE,
-  UNIQUE INDEX `Password_UNIQUE` (`Password` ASC) VISIBLE,
   PRIMARY KEY (`Username`),
+  UNIQUE INDEX `Password_UNIQUE` (`Password` ASC) VISIBLE,
   CONSTRAINT `CareProviderUserKey`
     FOREIGN KEY (`CareProviderID`)
     REFERENCES `emr_group_c`.`CareProvider` (`MedicalLicenseID`)
@@ -237,6 +237,10 @@ CREATE TABLE IF NOT EXISTS `emr_group_c`.`PatienttoCareProvider` (
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+CREATE USER 'emr_site' IDENTIFIED BY 'site123';
+
+GRANT SELECT, INSERT, TRIGGER ON TABLE `emr_group_c`.* TO 'emr_site';
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
