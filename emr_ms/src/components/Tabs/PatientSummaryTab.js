@@ -3,19 +3,21 @@ import { PatientContext, LoginContext } from '../sub-components/Context';
 import axios from 'axios';
 import { NavLink, Redirect } from 'react-router-dom';
 
+//Routes have not been built in routes.js
+//Add and Delete haven't been checked
+//Need to make this iterable (ie.  Array that uses .map to display multiple notes as each patient can have many)
+//Need to divide this tab into multiple based on category -- or do a big sort in how we're displaying the data.
+
 const PatientSummaryTab = () => {
 const { postData } = useContext(PatientContext)
 const { adminID } = useContext(LoginContext)
 const [ deleted, setDeleted ] = useState(false)
-const [ addressData, setAddressData ] = useState({
+const [ summaryData, setSummaryData ] = useState({
     PatientID: "",
-    AddressLine1: "",
-    AddressLine2: "",
-    AddressLine3: "",
-    City: "",
-    Province: "",
-    PostalCode: "",
-    Category: ""
+    HealthSummaryID: "",
+    Category: "",
+    Detail: "",
+    DetailDate: ""
 })
 const [changes, setChanges] = useState([ 'PatientID' ]);
 const [edit, setEdit] = useState(true);
@@ -24,44 +26,44 @@ useEffect(() => {
     const getData = async () => {
       try {
         console.log(postData)
-        const response = await axios.get('api/address', { params: postData }
+        const response = await axios.get('api/summary', { params: postData }
         // headers: { Authorization: `Bearer ${token.token}` },
     );
         console.log(response)
-        setAddressData(response.data[0]);
+        setSummaryData(response.data[0]);
       } catch (error) {
         alert(error);
         console.log(error);
       }
     };
     getData();
-  }, [ postData, setAddressData ]);
+  }, [ postData, setSummaryData ]);
 
 // On all inputs in form (except checkbox) handleChange will add the new value to 'data' and record the changed field in 'changes'
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setAddressData({
-      ...addressData,
+    setSummaryData({
+      ...summaryData,
       [name]: value,
     });
     setChanges([...changes, name]);
   }
 
 
-//Submits the form addressData after running 'sendData' to create the final object of changed data.    
+//Submits the form summaryData after running 'sendData' to create the final object of changed data.    
   const handleSubmit = async (event) => {
     event.preventDefault()
     let sendData = [] 
     changes.forEach(column => {
-        if(addressData[column]){
-              sendData = ({...sendData, [column]: addressData[column] })
+        if(summaryData[column]){
+              sendData = ({...sendData, [column]: summaryData[column] })
             }
         })
     console.log(sendData)
     try {
       const response = await axios({
         method: "post",
-        url: "api/address/edit",
+        url: "api/summary/edit",
         data: sendData
         // headers: { Authorization: `Bearer ${token.token}` },
       });
@@ -81,7 +83,7 @@ useEffect(() => {
       try {
         const response = await axios({
           method: "post",
-          url: "api/address/delete",
+          url: "api/summary/delete",
           data: deleteData,
           // headers: { Authorization: `Bearer ${token.token}` },
         });
@@ -105,7 +107,7 @@ useEffect(() => {
             <NavLink to="/add">
               <button>Add</button>
             </NavLink>
-            <button onClick={handleDelete} id={addressData.HealthCardNumberID}>
+            <button onClick={handleDelete} id={summaryData.HealthSummaryID}>
               Delete
             </button>
           </>
@@ -115,16 +117,16 @@ useEffect(() => {
         <form className="patient" onSubmit={handleSubmit}>
 
         <label htmlFor="healthCardNum">Health Card Number:</label>
-        <input type="text" className='not-form' name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} disabled={true}/>
+        <input type="text" className='not-form' name="PatientID" placeholder={summaryData.PatientID} value={summaryData.PatientID} disabled={true}/>
 
         <label htmlFor="Category">Category:</label>
-        <input type="text" className={edit ? 'not-form' : 'form'} name="Category" placeholder={data.Category} value={data.Category} onChange={handleChange} readOnly={edit}/>
+        <input type="text" className={edit ? 'not-form' : 'form'} name="Category" placeholder={summaryData.Category} value={summaryData.Category} onChange={handleChange} readOnly={edit}/>
 
         <label htmlFor="Detail">Detail:</label>
-        <input type="textarea" className={edit ? 'not-form' : 'form'} name="Detail" placeholder={data.Detail} value={data.Detail} onChange={handleChange} readOnly={edit}/>
+        <input type="textarea" className={edit ? 'not-form' : 'form'} name="Detail" placeholder={summaryData.Detail} value={summaryData.Detail} onChange={handleChange} readOnly={edit}/>
 
         <label htmlFor="DetailDate">Detail Date:</label>
-        <input type="date" className={edit ? 'not-form' : 'form'} name="DetailDate" placeholder={data.DetailDate} value={data.DetailDate} onChange={handleChange} readOnly={edit}/>
+        <input type="date" className={edit ? 'not-form' : 'form'} name="DetailDate" placeholder={summaryData.DetailDate} value={summaryData.DetailDate} onChange={handleChange} readOnly={edit}/>
 
 
 

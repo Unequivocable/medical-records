@@ -4,6 +4,11 @@ import axios from 'axios';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import { NavLink, Redirect } from 'react-router-dom';
+import AddressTab from '../Tabs/AddressTab'
+import EmergencyContactTab from '../Tabs/EmergencyContactTab'
+import NotesTab from '../Tabs/NotesTab'
+import PatientSummaryTab from '../Tabs/PatientSummaryTab';
+import RevisionDetailsTab from '../Tabs/RevisionDetailsTab';
 
 const PatReadEdit = () => {
   const { 
@@ -159,9 +164,11 @@ const handleSubmit = async (event) => {
         <Tab>Emergency Contact</Tab>
         <Tab>Patient Health Summary</Tab>
         <Tab>Notes</Tab>
+        <Tab>Revision Details</Tab>
       </TabList>
       <TabPanel className="address">
-      <form className="patient" onSubmit={handleSubmit}>
+        <AddressTab />
+      {/* <form className="patient" onSubmit={handleSubmit}>
 
         <label htmlFor="healthCardNum">Health Card Number:</label>
         <input type="text" className='not-form' name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} disabled={true}/>
@@ -190,10 +197,11 @@ const handleSubmit = async (event) => {
         
 
         <input type="submit" />
-      </form>
+      </form> */}
       </TabPanel>
       <TabPanel className="emergencyContact">
-        <form className="patient" onSubmit={handleSubmit}>
+        <EmergencyContactTab />
+        {/* <form className="patient" onSubmit={handleSubmit}>
 
         <label htmlFor="healthCardNum">Health Card Number:</label>
         <input type="text" className='not-form' name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} disabled={true}/>
@@ -214,10 +222,11 @@ const handleSubmit = async (event) => {
         <input type="text" className={edit ? 'not-form' : 'form'} name="Relationship" placeholder={data.Relationship}  value={data.Relationship} onChange={handleChange} readOnly={edit}/>
 
         <input type="submit" />
-        </form>
+        </form> */}
       </TabPanel>
       <TabPanel className="patientHealthSummary">
-        <form className="patient" onSubmit={handleSubmit}>
+        <PatientSummaryTab />
+        {/* <form className="patient" onSubmit={handleSubmit}>
 
         <label htmlFor="healthCardNum">Health Card Number:</label>
         <input type="text" className='not-form' name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} disabled={true}/>
@@ -233,10 +242,11 @@ const handleSubmit = async (event) => {
 
 
         <input type="submit" />
-        </form>
+        </form> */}
       </TabPanel>
       <TabPanel className="Notes">
-      <form className="patient" onSubmit={handleSubmit}>
+        <NotesTab />
+      {/* <form className="patient" onSubmit={handleSubmit}>
 
         <label htmlFor="healthCardNum">Health Card Number:</label>
         <input type="text" className='not-form' name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} disabled={true}/>
@@ -248,8 +258,11 @@ const handleSubmit = async (event) => {
         <input type="time" className={edit ? 'not-form' : 'form'} name="Timestamp" placeholder={data.Timestamp} value={data.Timestamp} onChange={handleChange} readOnly={edit}/>
 
         <input type="submit" />
-        </form>
+        </form> */}
       </TabPanel>
+      <TabPanel className="RevisionDetails">
+        <RevisionDetailsTab />
+        </TabPanel>
     </Tabs>
   
 
