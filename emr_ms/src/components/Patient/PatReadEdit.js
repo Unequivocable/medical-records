@@ -3,15 +3,17 @@ import { PatientContext, LoginContext } from '../sub-components/Context';
 import axios from 'axios';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
+import { NavLink, Redirect } from 'react-router-dom';
 
 const PatReadEdit = () => {
-const { 
-    data, setData, 
-    postData, setPostData, 
-    changes, setChanges, 
-    edit, setEdit } = useContext(PatientContext)
-const { careID, adminID } = useContext(LoginContext)
-const [ deleted, setDeleted ] = useState(false)
+  const { 
+      data, setData, 
+      postData,  
+      changes, setChanges, 
+      edit, setEdit } = useContext(PatientContext)
+  const { adminID } = useContext(LoginContext)
+  const [ deleted, setDeleted ] = useState(false)
+  const [ tabIndex, setTabIndex ] = useState(0)
 
 
 useEffect(() => {
@@ -51,34 +53,30 @@ useEffect(() => {
     setChanges([...changes, name]);
   }
 
-// To be run before submitting changes.  This looks at 'data' and changed fields in 'changes' and makes a new object 'postData' that only has changed values in it.
-  const sendData = (formData, columns) => {
-      columns.forEach(column => {
-        if(formData[column]){
-          setPostData({...postData, [column]: formData[column] })
-        }
-    })
-  }
-
-
 //Submits the form data after running 'sendData' to create the final object of changed data.    
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    sendData(data, changes);
-    try {
-      const response = await axios({
-        method: "post",
-        url: "api/patient/edit",
-        data: data
-        // headers: { Authorization: `Bearer ${token.token}` },
-      });
-      console.log(response);
-      alert("Data has been updated");
-    } catch (error) {
-      alert(error);
-      console.log(error);
-    }
+const handleSubmit = async (event) => {
+  event.preventDefault()
+  let sendData = [] 
+  changes.forEach(column => {
+      if(data[column]){
+            sendData = ({...sendData, [column]: data[column] })
+          }
+      })
+  try {
+    const response = await axios({
+      method: "post",
+      url: "api/patient/edit",
+      data: sendData
+      // headers: { Authorization: `Bearer ${token.token}` },
+    });
+    console.log(response);
+    alert("Data has been updated");
+    setChanges([ 'HealthCardNumberID' ])
+  } catch (error) {
+    alert(error);
+    console.log(error);
   }
+}
 
   const handleDelete = async (event) => { 
     const deleteData = { HealthCardNumberID: [event.target.id] }

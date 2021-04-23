@@ -1,10 +1,9 @@
 import React, { useState, useContext } from 'react'
-import { useHistory, useLocation, NavLink, Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import { LoginContext } from './sub-components/Context'
-
 import axios from 'axios';
 
-//import { LoginContext } from './components/sub-components/Context'
+
 
 const Home = () => {
     // let history = useHistory();
@@ -47,6 +46,7 @@ const Home = () => {
           setAuth(false)
 
         })
+        console.log(res)
     }
 
   return (

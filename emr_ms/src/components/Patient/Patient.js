@@ -5,6 +5,7 @@ import { PatientContext } from '../sub-components/Context'
 import PatReadEdit from "./PatReadEdit";
 import PatAdd from './PatAdd'
 import PatSearch from "./PatSearch";
+import AddressTab from "../Tabs/AddressTab";
 
 const Patient = () => {
 
@@ -60,6 +61,7 @@ const Patient = () => {
           <Route exact path="/patient" component={PatSearch} />
           <Route path="/add" component={PatAdd} />
           <Route path="/read" component={PatReadEdit} />
+          <Route path="/address" component={AddressTab} />
         </Switch>
       </BrowserRouter>
     </div>
