@@ -1,20 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
+import { LoginContext } from "./Context";
 
 const Nav = (props) => {
+  const { setCareID, adminID, setAdminID } = useContext(LoginContext)
+  
+  const logout = () => {
+    setCareID("");
+    setAdminID("")
+  }
+  
   return (
     <nav>
       <ul>
         <li className="inactive logout">
-          <NavLink to="/">Logout</NavLink>
+          <NavLink onClick={logout} to="/">Logout</NavLink>
         </li>
-        {props.superadmin ?  
+        {adminID ?  
           <>
           <li className={props.patient}>
-          <NavLink to= {{
-            pathname: "/patient",
-            superadmin: true
-            }}>Patient</NavLink>
+          <NavLink to="/patient">Patient</NavLink>
            </li>
           <li className={props.careprovider}>
              <NavLink to="/careprovider">Care Providers</NavLink>
