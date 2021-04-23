@@ -286,9 +286,16 @@ router.post("/api/auth", async (req, res, next) => {
 // Address table routes 
 
 router.get("/api/address", (req, res) => {
-    db.query('SELECT * FROM address WHERE ActiveFlag = 1 AND PatientID = ?', [req.query.HealthCardNumberID], function (error, results, fields){
+    let query = () => {
+        if(req.query.CareProviderID) {
+            return `SELECT * FROM address WHERE ActiveFlag = 1 AND CareProviderID = ${req.query.CareProviderID}`
+        } else { 
+            return `SELECT * FROM address WHERE ActiveFlag = 1 AND PatientID = ${req.query.PatientID}?`
+        }
+    }
+    db.query(query(), function (error, results, fields){
         if (error) throw error;
-        console.log("finished retrieval");
+        console.log("finished address retrieval");
         return res.status(200).send(results);
     })
 
@@ -296,10 +303,10 @@ router.get("/api/address", (req, res) => {
 
 router.post("/api/address/edit", async (req, res, next) => {
     try {
-        db.query('UPDATE address SET ? WHERE PatientID = ?', 
-        [req.body, req.body.PatientID], function (error, results, fields){
+        db.query('UPDATE address SET ? WHERE AddressID = ?', 
+        [req.body, req.body.AddressID], function (error, results, fields){
             if (error) throw error;
-            console.log("finished patient update");
+            console.log("finished address update");
             return res.status(200).send(results);
         })
     } catch (error) {
@@ -308,5 +315,184 @@ router.post("/api/address/edit", async (req, res, next) => {
     }
 })
 
+router.post("/api/address/add", async (req, res, next) => {
+    try {
+        db.query('INSERT INTO address SET ?', [req.body], function (error, results, fields){
+            if (error) throw error;
+            console.log("finished address add");
+            return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
+
+router.post("/api/address/delete", async (req, res, next) => {
+    try {
+        db.query('UPDATE address SET ActiveFlag = 0 WHERE AddressID = ?',[req.body.AddressID],
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log("finished address delete update");
+              return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
+
+router.get("/api/emergency", (req, res) => {
+    db.query('SELECT * FROM emergencycontact SET ? WHERE PatientID = ?', 
+    [req.body.PatientID], function (error, results, fields){
+        if (error) throw error;
+        console.log("finished emergencycontact retrieval");
+        return res.status(200).send(results);
+    })
+
+})
+
+router.post("/api/emergency/edit", async (req, res, next) => {
+    try {
+        db.query('UPDATE emergencycontact SET ? WHERE PatientID = ?', 
+        [req.body, req.body.PatientID], function (error, results, fields){
+            if (error) throw error;
+            console.log("finished emergencycontact update");
+            return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
+
+router.post("/api/emergency/add", async (req, res, next) => {
+    try {
+        db.query('INSERT INTO emergencycontact SET ?', [req.body], function (error, results, fields){
+            if (error) throw error;
+            console.log("finished emergencycontact add");
+            return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
+
+router.post("/api/emergency/delete", async (req, res, next) => {
+    try {
+        db.query("UPDATE emergencycontact SET ActiveFlag = 0 WHERE PatientID = ?",[req.body.PatientID],
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log("finished emergencycontact delete update");
+              return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
+
+router.get("/api/notes", (req, res) => {
+    db.query('SELECT * FROM notes SET ? WHERE PatientID = ?', 
+    [req.body.PatientID], function (error, results, fields){
+        if (error) throw error;
+        console.log("finished notes retrieval");
+        return res.status(200).send(results);
+    })
+
+})
+
+router.post("/api/notes/edit", async (req, res, next) => {
+    try {
+        db.query('UPDATE notes SET ? WHERE NoteID = ?', 
+        [req.body, req.body.NoteID], function (error, results, fields){
+            if (error) throw error;
+            console.log("finished notes update");
+            return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
+
+router.post("/api/notes/add", async (req, res, next) => {
+    try {
+        db.query('INSERT INTO notes SET ?', [req.body], function (error, results, fields){
+            if (error) throw error;
+            console.log("finished notes add");
+            return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
+
+router.post("/api/notes/delete", async (req, res, next) => {
+    try {
+        db.query("UPDATE notes SET ActiveFlag = 0 WHERE NoteID = ?",[req.body.NoteID],
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log("finished notes delete update");
+              return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
+
+router.get("/api/summary", (req, res) => {
+    db.query('SELECT * FROM patienthealthsummary SET ? WHERE PatientID = ?', 
+    [req.body.PatientID], function (error, results, fields){
+        if (error) throw error;
+        console.log("finished patienthealthsummary retrieval");
+        return res.status(200).send(results);
+    })
+
+})
+
+router.post("/api/summary/edit", async (req, res, next) => {
+    try {
+        db.query('UPDATE patienthealthsummary SET ? WHERE HealthSummaryID = ?', 
+        [req.body, req.body.NoteID], function (error, results, fields){
+            if (error) throw error;
+            console.log("finished patienthealthsummary update");
+            return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
+
+router.post("/api/summary/add", async (req, res, next) => {
+    try {
+        db.query('INSERT INTO patienthealthsummary SET ?', [req.body], function (error, results, fields){
+            if (error) throw error;
+            console.log("finished summary add");
+            return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
+
+router.post("/api/summary/delete", async (req, res, next) => {
+    try {
+        db.query("UPDATE patienthealthsummary SET ActiveFlag = 0 WHERE HealthSummaryID = ?",[req.body.NoteID],
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log("finished patienthealthsummary delete update");
+              return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
 
 export default router

@@ -3,7 +3,6 @@ import { PatientContext, LoginContext } from '../sub-components/Context';
 import axios from 'axios';
 import { NavLink, Redirect } from 'react-router-dom';
 
-//Need routes built (see this file for names)
 //Add and Delete not rebuilt
 
 const EmergencyContactTab = () => {
