@@ -212,8 +212,7 @@ router.get("/api/cp/all", (req, res) => {
 // Revision Details Read and Adds
 
 router.get("/api/revision", (req, res) => {
-    console.log(req.query)
-    const query = `SELECT * FROM revisiondetails  WHERE PatientID = ${req.query.HealthCardNumberID} ORDER BY Timestamp DESC LIMIT ${req.query.limit} OFFSET ${req.query.offset}`
+    const query = `SELECT * FROM revisiondetails WHERE PatientID = ${req.query.PatientID} ORDER BY Timestamp DESC LIMIT ${req.query.limit} OFFSET ${req.query.offset}`
     
     db.query(query, function (error, results, fields){
         if (error) throw error;

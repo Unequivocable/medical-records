@@ -3,8 +3,6 @@ import { PatientContext } from '../sub-components/Context';
 import axios from 'axios';
 
 
-//Add and Delete haven't been checked
-//Need to make this iterable (ie.  Array that uses .map to display multiple notes as each patient can have many)
 //Need to divide this tab into multiple based on category -- or do a big sort in how we're displaying the data.
 
 const PatientSummaryTab = () => {
@@ -57,10 +55,12 @@ useEffect(() => {
 // On all inputs in form (except checkbox) handleChange will add the new value to 'data' and record the changed field in 'changes'
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setSummaryData({
-      ...summaryData,
-      [name]: value,
-    });
+    const thisIndex = summaryData.map((item) => {
+      return item.HealthSummaryID;
+    }).indexOf(parseInt(event.target.parentElement.id))
+    let newData = [...summaryData]
+    newData[thisIndex][name] = value;
+    setSummaryData(newData);
     setChanges([...changes, name]);
   }
 
@@ -75,12 +75,11 @@ useEffect(() => {
 //Submits the form summaryData after running 'sendData' to create the final object of changed data.    
   const handleSubmit = async (event) => {
     event.preventDefault()
-    let sendData = [] 
-    changes.forEach(column => {
-        if(summaryData[column]){
-              sendData = ({...sendData, [column]: summaryData[column] })
-            }
-        })
+    const thisIndex = summaryData.map((item) => {
+      return item.HealthSummaryID;
+    }).indexOf(parseInt(event.target.id))
+
+  let sendData = summaryData[thisIndex]
     console.log(sendData)
     try {
       const response = await axios({
@@ -92,6 +91,7 @@ useEffect(() => {
       console.log(response);
       alert("Data has been updated");
       setChanges([ 'PatientID' ])
+      setEdit(!edit)
     } catch (error) {
       alert(error);
       console.log(error);
@@ -189,13 +189,14 @@ useEffect(() => {
         ) : null}
 
 
-{summaryData[0].PatientID ? summaryData.map((summaryData) => (
+        {summaryData.map((summaryData) => (
         <div key={summaryData.HealthSummaryID}>
 
+        {summaryData.HealthSummaryID ? <>
         <button onClick={handleDelete} id={summaryData.HealthSummaryID}>Delete</button>
-        <button onClick={() => setEdit(!edit)}>Edit</button>
+        <button onClick={() => setEdit(!edit)}>Edit</button></> : null }
 
-        <form className="patient" onSubmit={handleSubmit}>
+        <form className="patient" id={summaryData.HealthSummaryID} onSubmit={handleSubmit}>
           <label htmlFor="Category">Category:</label>
           <input
             type="text"
@@ -231,7 +232,7 @@ useEffect(() => {
 
           {!edit ? <input type="submit" /> : null}
         </form>
-        </div>)) : null} 
+        </div>))} 
         </>
     );
 }

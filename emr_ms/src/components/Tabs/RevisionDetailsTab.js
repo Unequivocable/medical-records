@@ -6,8 +6,8 @@ import axios from 'axios';
 // This one is display only so we don't need edit or add -- we just need to ensure the pagination works
 
 const RevisionDetails = () => {
-const { setPostData, postData } = useContext(PatientContext)
-const [ rd, setRd ] = useState([{
+const { postData } = useContext(PatientContext)
+const [ rdData, setRdData ] = useState([{
   RevisionID: "",
   PatientID: "",
   CareProviderID: "",
@@ -15,48 +15,45 @@ const [ rd, setRd ] = useState([{
   RevisionDetails: "",
   Timestamp: "" 
 }])
+const [ page, setPage ] = useState(0)
 
 useEffect(() => {
   const getData = async () => {
+    let searchDetails = {
+      PatientID: postData.HealthCardNumberID,
+      limit: 10,
+      offset: page
+    }
     try {
-      console.log(postData)
-      const response = await axios.get('api/revision', { params: postData }
+      const response = await axios.get('api/revision', { params: searchDetails }
       // headers: { Authorization: `Bearer ${token.token}` },
   );
       console.log(response)
-      setRd(response.data[0]);
+      setRdData(response.data);
     } catch (error) {
       alert(error);
       console.log(error);
     }
   };
   getData();
-}, [ postData, setRd ]);
+}, [ postData, setRdData, page ]);
 
 
-  const handleSubmitRD = async (event) => {
-     let limit = {
-        HealthCardNumberID: 661466,
-        limit: 5,
-        offset: event.target.id
-      }
-    setPostData(limit)
+  const handlePageForward = () => {
+      setPage(page => page + 10)
   }
-
+  const handlePageBackwards = () => {
+    setPage(page => page - 10)
+  }
 
     return (
         <>
-            {rd.map((entry) => (
+            {rdData.map((entry) => (
                  <div key={entry.RevisionID}>
-                    {entry.RevisionID}<br />
-                    {entry.PatientID}<br />
-                    {entry.CareProviderID ? entry.CareProviderID : null} <br />
-                    {entry.SuperAdminID ? entry.SuperAdminID : null} <br />
-                    {entry.RevisionDetails} <br />
-                    {entry.Timestamp} <br />
+                    {entry.RevisionID} | {entry.PatientID} | {entry.CareProviderID ? entry.CareProviderID : null}{entry.SuperAdminID ? entry.SuperAdminID : null} | {entry.RevisionDetails} |  {entry.Timestamp} <br />
                 </div>))}
-                  <button onClick={handleSubmitRD} id="0">Get RD</button>
-                  <button onClick={handleSubmitRD} id="5">Next Page</button>
+             {page===0 ? null: <button onClick={handlePageBackwards}>Previous Page</button>}
+             {rdData.length<10 ? null : <button onClick={handlePageForward}>Next Page</button>}
 
         </>
     )

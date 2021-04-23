@@ -64,10 +64,12 @@ useEffect(() => {
 // On all inputs in form (except checkbox) handleChange will add the new value to 'data' and record the changed field in 'changes'
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setAddressData({
-      ...addressData,
-      [name]: value,
-    });
+    const thisIndex = addressData.map((item) => {
+      return item.AddressID;
+    }).indexOf(parseInt(event.target.parentElement.id))
+    let newData = [...addressData]
+    newData[thisIndex][name] = value;
+    setAddressData(newData);
     setChanges([...changes, name]);
   }
 
@@ -82,13 +84,12 @@ useEffect(() => {
 //Submits the form addressData after running 'sendData' to create the final object of changed data.    
   const handleSubmit = async (event) => {
     event.preventDefault()
-    let sendData = [] 
-    changes.forEach(column => {
-        if(addressData[column]){
-              sendData = ({...sendData, [column]: addressData[column] })
-            }
-        })
-    console.log(sendData)
+    const thisIndex = addressData.map((item) => {
+      return item.AddressID;
+    }).indexOf(parseInt(event.target.id))
+
+  let sendData = addressData[thisIndex]
+  console.log(sendData)
     try {
       const response = await axios({
         method: "post",
@@ -99,6 +100,7 @@ useEffect(() => {
       console.log(response);
       alert("Data has been updated");
       setChanges([ 'CareProviderID' ])
+      setEdit(!edit)
     } catch (error) {
       alert(error);
       console.log(error);
@@ -244,12 +246,12 @@ useEffect(() => {
           </form>
         ) : null}
 
-        {addressData[0].CareProviderID ? addressData.map((addressData) => (
+        {addressData.map((addressData) => (
         <div key={addressData.AddressID}>
         <button onClick={handleDelete} id={addressData.AddressID}>Delete</button>
         <button onClick={() => setEdit(!edit)}>Edit</button>
 
-        <form className="patient" onSubmit={handleSubmit}>
+        <form className="patient" id={addressData.AddressID} onSubmit={handleSubmit}>
           <label htmlFor="AddressLine1">Address Line 1:</label>
           <input
             type="text"
@@ -329,7 +331,7 @@ useEffect(() => {
 
           {!edit ? <input type="submit" /> : null}
         </form>
-        </div>)) : null} 
+        </div>))} 
         
   
       </>
