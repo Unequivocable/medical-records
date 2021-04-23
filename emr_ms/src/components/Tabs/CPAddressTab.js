@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { PatientContext } from '../sub-components/Context';
+import { CareProviderContext } from '../sub-components/Context';
 import axios from 'axios';
 
 
-const AddressTab = () => {
-const { postData } = useContext(PatientContext)
+const CPAddressTab = () => {
+const { postData } = useContext(CareProviderContext)
 const [ addressData, setAddressData ] = useState([{
     AddressID: "",
-    PatientID: "",
+    CareProviderID: "",
     AddressLine1: "",
     AddressLine2: "",
     AddressLine3: "",
@@ -16,12 +16,12 @@ const [ addressData, setAddressData ] = useState([{
     PostalCode: "",
     Category: ""
 }])
-const [changes, setChanges] = useState([ 'PatientID' ]);
+const [changes, setChanges] = useState([ 'CareProviderID' ]);
 const [edit, setEdit] = useState(true);
 const [add, setAdd] = useState(false);
 const [refresh, setRefresh] = useState(false);
 const [ addressDataAdd, setAddressDataAdd ] = useState({
-  PatientID: postData.HealthCardNumberID,
+  CareProviderID: postData.CareProviderID,
   AddressLine1: "",
   AddressLine2: "",
   AddressLine3: "",
@@ -43,7 +43,7 @@ useEffect(() => {
           setAddressData(response.data);
         } else {
           setAddressData([{
-            PatientID: "",
+            CareProviderID: "",
             AddressLine1: "",
             AddressLine2: "",
             AddressLine3: "",
@@ -98,7 +98,7 @@ useEffect(() => {
       });
       console.log(response);
       alert("Data has been updated");
-      setChanges([ 'PatientID' ])
+      setChanges([ 'CareProviderID' ])
     } catch (error) {
       alert(error);
       console.log(error);
@@ -120,7 +120,7 @@ useEffect(() => {
       setAdd(!add)
       setRefresh(!refresh)
       setAddressDataAdd({
-        PatientID: postData.HealthCardNumberID,
+        CareProviderID: postData.CareProviderID,
         AddressLine1: "",
         AddressLine2: "",
         AddressLine3: "",
@@ -244,13 +244,12 @@ useEffect(() => {
           </form>
         ) : null}
 
-        {addressData[0].PatientID ? addressData.map((addressData) => (
+        {addressData[0].CareProviderID ? addressData.map((addressData) => (
         <div key={addressData.AddressID}>
         <button onClick={handleDelete} id={addressData.AddressID}>Delete</button>
         <button onClick={() => setEdit(!edit)}>Edit</button>
 
         <form className="patient" onSubmit={handleSubmit}>
-
           <label htmlFor="AddressLine1">Address Line 1:</label>
           <input
             type="text"
@@ -337,4 +336,4 @@ useEffect(() => {
     );
 }
 
-export default AddressTab;
+export default CPAddressTab;
