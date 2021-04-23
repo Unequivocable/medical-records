@@ -166,7 +166,7 @@ useEffect(() => {
     return (
       <>
         <button onClick={() => setAdd(!add)}>Add New</button>
-        {console.log(addressData)}
+
         {add ? (
           <form className="patient" onSubmit={handleSubmitAdd}>
             <label htmlFor="AddressLine1">Address Line 1:</label>
@@ -248,12 +248,12 @@ useEffect(() => {
           </form>
         ) : null}
 
-        {/* {addressData[0].PatientID ?  */}
-
         {addressData.map((addressData) => (
         <div key={addressData.AddressID}>
+
+        {addressData.AddressID ? <>
         <button onClick={handleDelete} id={addressData.AddressID}>Delete</button>
-        <button onClick={() => setEdit(!edit)}>Edit</button>
+        <button onClick={() => setEdit(!edit)}>Edit</button> </> : null}
 
         <form className="patient" id={addressData.AddressID} onSubmit={handleSubmit}>
 
@@ -337,8 +337,7 @@ useEffect(() => {
           {!edit ? <input type="submit" /> : null}
         </form>
         </div>)) }
-        {/* )) : null}  */}
-        
+      
   
       </>
     );

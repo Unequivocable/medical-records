@@ -57,10 +57,12 @@ useEffect(() => {
 // On all inputs in form (except checkbox) handleChange will add the new value to 'data' and record the changed field in 'changes'
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setEcData({
-      ...ecData,
-      [name]: value,
-    });
+    const thisIndex = ecData.map((item) => {
+      return item.ContactID;
+    }).indexOf(parseInt(event.target.parentElement.id))
+    let newData = [...ecData]
+    newData[thisIndex][name] = value;
+    setEcData(newData);
     setChanges([...changes, name]);
   }
 
@@ -75,12 +77,11 @@ useEffect(() => {
 //Submits the form ecData after running 'sendData' to create the final object of changed data.    
   const handleSubmit = async (event) => {
     event.preventDefault()
-    let sendData = [] 
-    changes.forEach(column => {
-        if(ecData[column]){
-              sendData = ({...sendData, [column]: ecData[column] })
-            }
-        })
+    const thisIndex = ecData.map((item) => {
+      return item.ContactID;
+    }).indexOf(parseInt(event.target.id))
+
+  let sendData = ecData[thisIndex]
     console.log(sendData)
     try {
       const response = await axios({
@@ -214,13 +215,14 @@ useEffect(() => {
           </form>
         ) : null}
 
-        {ecData[0].PatientID ? ecData.map((ecData) => (
+        {ecData.map((ecData) => (
         <div key={ecData.ContactID}>
 
+        {ecData.ContactID ? <>
         <button onClick={handleDelete} id={ecData.ContactID}>Delete</button>
-        <button onClick={() => setEdit(!edit)}>Edit</button>
+        <button onClick={() => setEdit(!edit)}>Edit</button></> : null }
 
-        <form className="patient" onSubmit={handleSubmit}>
+        <form className="patient" id={ecData.ContactID} onSubmit={handleSubmit}>
          <label htmlFor="firstName">First Name:</label>
           <input
             type="text"
@@ -278,7 +280,7 @@ useEffect(() => {
 
           {!edit ? <input type="submit" /> : null}
         </form>
-        </div>)) : null} 
+        </div>))} 
       </>
     );
 }
