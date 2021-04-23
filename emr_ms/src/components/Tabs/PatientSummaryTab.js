@@ -3,7 +3,6 @@ import { PatientContext, LoginContext } from '../sub-components/Context';
 import axios from 'axios';
 import { NavLink, Redirect } from 'react-router-dom';
 
-//Routes have not been built in routes.js
 //Add and Delete haven't been checked
 //Need to make this iterable (ie.  Array that uses .map to display multiple notes as each patient can have many)
 //Need to divide this tab into multiple based on category -- or do a big sort in how we're displaying the data.
