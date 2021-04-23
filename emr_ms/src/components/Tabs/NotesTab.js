@@ -28,10 +28,12 @@ useEffect(() => {
         console.log(postData)
         const response = await axios.get('api/notes', { params: postData }
         // headers: { Authorization: `Bearer ${token.token}` },
-    );
-        console.log(response)
-        setNotesData(response.data[0]);
-      } catch (error) {
+    )
+    .then(function (res) { 
+        console.log(res)
+        setNotesData(res.data);
+      })
+    } catch (error) {
         alert(error);
         console.log(error);
       }
@@ -114,14 +116,16 @@ useEffect(() => {
         ) : null}
         <button onClick={() => setEdit(!edit)}>Edit</button>
 
+        {notesData.map((entry) => (
+        <div className="notes" key={entry.NoteID}>
         <form className="patient" onSubmit={handleSubmit}>
           <label htmlFor="healthCardNum">Health Card Number:</label>
           <input
             type="text"
             className="not-form"
             name="HealthCardNumberID"
-            placeholder={notesData.PatientID}
-            value={notesData.PatientID}
+            placeholder={entry.PatientID}
+            value={entry.PatientID}
             disabled={true}
           />
 
@@ -130,8 +134,8 @@ useEffect(() => {
             type="text"
             className={edit ? "not-form" : "form"}
             name="NoteDetail"
-            placeholder={notesData.NoteDetail}
-            value={notesData.NoteDetail}
+            placeholder={entry.NoteDetail}
+            value={entry.NoteDetail}
             onChange={handleChange}
             readOnly={edit}
           />
@@ -141,14 +145,15 @@ useEffect(() => {
             type="time"
             className={edit ? "not-form" : "form"}
             name="Timestamp"
-            placeholder={notesData.Timestamp}
-            value={notesData.Timestamp}
+            placeholder={entry.Timestamp}
+            value={entry.Timestamp}
             onChange={handleChange}
             readOnly={edit}
-          />
-
+          /> 
+          
           {!edit ? <input type="submit" /> : null}
         </form>
+        </div>))}
       </>
     );
 }
