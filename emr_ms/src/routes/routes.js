@@ -290,12 +290,13 @@ router.get("/api/address", (req, res) => {
         if(req.query.CareProviderID) {
             return `SELECT * FROM address WHERE ActiveFlag = 1 AND CareProviderID = ${req.query.CareProviderID}`
         } else { 
-            return `SELECT * FROM address WHERE ActiveFlag = 1 AND PatientID = ${req.query.PatientID}?`
+            return `SELECT * FROM address WHERE ActiveFlag = 1 AND PatientID = ${req.query.HealthCardNumberID}`
         }
     }
     db.query(query(), function (error, results, fields){
         if (error) throw error;
         console.log("finished address retrieval");
+        console.log(results);
         return res.status(200).send(results);
     })
 

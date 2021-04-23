@@ -77,6 +77,7 @@ const handleSubmit = async (event) => {
     console.log(response);
     alert("Data has been updated");
     setChanges([ 'HealthCardNumberID' ])
+    setEdit(!edit)
   } catch (error) {
     alert(error);
     console.log(error);
@@ -168,97 +169,15 @@ const handleSubmit = async (event) => {
       </TabList>
       <TabPanel className="address">
         <AddressTab />
-      {/* <form className="patient" onSubmit={handleSubmit}>
-
-        <label htmlFor="healthCardNum">Health Card Number:</label>
-        <input type="text" className='not-form' name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} disabled={true}/>
-
-        <label htmlFor="AddressLine1">Address Line 1:</label>
-        <input type="text" className={edit ? 'not-form' : 'form'} name="AddressLine1" placeholder={data.AddressLine1} value={data.AddressLine1} onChange={handleChange} readOnly={edit}/>
-
-        <label htmlFor="AddressLine2">Address Line 2:</label>
-        <input type="text" className={edit ? 'not-form' : 'form'} name="AddressLine2" placeholder={data.AddressLine2} value={data.AddressLine2} onChange={handleChange} readOnly={edit}/>
-
-        <label htmlFor="AddressLine3">Address Line 3:</label>
-        <input type="text" className={edit ? 'not-form' : 'form'} name="AddressLine3" placeholder={data.AddressLine3} value={data.AddressLine3} onChange={handleChange} readOnly={edit}/>
-
-        <label htmlFor="City">City:</label>
-        <input type="text" className={edit ? 'not-form' : 'form'} name="City" placeholder={data.City}  value={data.City} onChange={handleChange} readOnly={edit}/>
-
-        <label htmlFor="Province">Province:</label>
-        <input type="text" className={edit ? 'not-form' : 'form'} name="Province" placeholder={data.Province} value={data.Province} onChange={handleChange} readOnly={edit}/>
-
-        <label htmlFor="PostalCode">Postal Code:</label>
-        <input type="text" className={edit ? 'not-form' : 'form'} name="PostalCode" placeholder={data.PostalCode} value={data.PostalCode} onChange={handleChange} readOnly={edit}/>
-
-        <label htmlFor="Category">Category:</label>
-        <input type="text" className={edit ? 'not-form' : 'form'} name="Category" placeholder={data.Category} value={data.Category} onChange={handleChange} readOnly={edit}/>
-
-        
-
-        <input type="submit" />
-      </form> */}
       </TabPanel>
       <TabPanel className="emergencyContact">
         <EmergencyContactTab />
-        {/* <form className="patient" onSubmit={handleSubmit}>
-
-        <label htmlFor="healthCardNum">Health Card Number:</label>
-        <input type="text" className='not-form' name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} disabled={true}/>
-
-        <label htmlFor="firstName">First Name:</label>
-        <input type="text" className={edit ? 'not-form' : 'form'} name="firstName" placeholder={data.firstName} value={data.firstName} onChange={handleChange} readOnly={edit}/>
-
-        <label htmlFor="lastName">Last Name:</label>
-        <input type="text" className={edit ? 'not-form' : 'form'} name="lastName" placeholder={data.lastName} value={data.lastName} onChange={handleChange} readOnly={edit}/>
-
-        <label htmlFor="Phone">Phone:</label>
-        <input type="phone" className={edit ? 'not-form' : 'form'} name="Phone" placeholder={data.Phone}  value={data.Phone} onChange={handleChange} readOnly={edit}/>
-
-        <label htmlFor="Email">Email:</label>
-        <input type="email" className={edit ? 'not-form' : 'form'} name="Email" placeholder={data.Email} value={data.Email} onChange={handleChange} readOnly={edit}/>
-
-        <label htmlFor="Relationship">Relationship:</label>
-        <input type="text" className={edit ? 'not-form' : 'form'} name="Relationship" placeholder={data.Relationship}  value={data.Relationship} onChange={handleChange} readOnly={edit}/>
-
-        <input type="submit" />
-        </form> */}
-      </TabPanel>
+       </TabPanel>
       <TabPanel className="patientHealthSummary">
         <PatientSummaryTab />
-        {/* <form className="patient" onSubmit={handleSubmit}>
-
-        <label htmlFor="healthCardNum">Health Card Number:</label>
-        <input type="text" className='not-form' name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} disabled={true}/>
-
-        <label htmlFor="Category">Category:</label>
-        <input type="text" className={edit ? 'not-form' : 'form'} name="Category" placeholder={data.Category} value={data.Category} onChange={handleChange} readOnly={edit}/>
-
-        <label htmlFor="Detail">Detail:</label>
-        <input type="textarea" className={edit ? 'not-form' : 'form'} name="Detail" placeholder={data.Detail} value={data.Detail} onChange={handleChange} readOnly={edit}/>
-
-        <label htmlFor="DetailDate">Detail Date:</label>
-        <input type="date" className={edit ? 'not-form' : 'form'} name="DetailDate" placeholder={data.DetailDate} value={data.DetailDate} onChange={handleChange} readOnly={edit}/>
-
-
-        <input type="submit" />
-        </form> */}
       </TabPanel>
       <TabPanel className="Notes">
         <NotesTab />
-      {/* <form className="patient" onSubmit={handleSubmit}>
-
-        <label htmlFor="healthCardNum">Health Card Number:</label>
-        <input type="text" className='not-form' name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} disabled={true}/>
-
-        <label htmlFor="NoteDetail">Note:</label>
-        <input type="text" className={edit ? 'not-form' : 'form'} name="NoteDetail" placeholder={data.NoteDetail} value={data.NoteDetail} onChange={handleChange} readOnly={edit}/>
-
-        <label htmlFor="Timestamp">Timestamp:</label>
-        <input type="time" className={edit ? 'not-form' : 'form'} name="Timestamp" placeholder={data.Timestamp} value={data.Timestamp} onChange={handleChange} readOnly={edit}/>
-
-        <input type="submit" />
-        </form> */}
       </TabPanel>
       <TabPanel className="RevisionDetails">
         <RevisionDetailsTab />
