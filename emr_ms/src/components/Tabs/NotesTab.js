@@ -3,20 +3,22 @@ import { PatientContext, LoginContext } from '../sub-components/Context';
 import axios from 'axios';
 import { NavLink, Redirect } from 'react-router-dom';
 
+//Routes have not been built in routes.js
+//Add and Delete haven't been checked
+//Need to make this iterable (ie.  Array that uses .map to display multiple notes as each patient can have many)
+
+
 const NotesTab = () => {
 const { postData } = useContext(PatientContext)
 const { adminID } = useContext(LoginContext)
 const [ deleted, setDeleted ] = useState(false)
-const [ addressData, setAddressData ] = useState({
+const [ notesData, setNotesData ] = useState({
     PatientID: "",
-    AddressLine1: "",
-    AddressLine2: "",
-    AddressLine3: "",
-    City: "",
-    Province: "",
-    PostalCode: "",
-    Category: ""
-})
+    CareProviderID: "",
+    NoteID: "",
+    NoteDetail: "",
+    Timestamp: ""
+  })
 const [changes, setChanges] = useState([ 'PatientID' ]);
 const [edit, setEdit] = useState(true);
 
@@ -24,44 +26,44 @@ useEffect(() => {
     const getData = async () => {
       try {
         console.log(postData)
-        const response = await axios.get('api/address', { params: postData }
+        const response = await axios.get('api/notes', { params: postData }
         // headers: { Authorization: `Bearer ${token.token}` },
     );
         console.log(response)
-        setAddressData(response.data[0]);
+        setNotesData(response.data[0]);
       } catch (error) {
         alert(error);
         console.log(error);
       }
     };
     getData();
-  }, [ postData, setAddressData ]);
+  }, [ postData, setNotesData ]);
 
 // On all inputs in form (except checkbox) handleChange will add the new value to 'data' and record the changed field in 'changes'
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setAddressData({
-      ...addressData,
+    setNotesData({
+      ...notesData,
       [name]: value,
     });
     setChanges([...changes, name]);
   }
 
 
-//Submits the form addressData after running 'sendData' to create the final object of changed data.    
+//Submits the form notesData after running 'sendData' to create the final object of changed data.    
   const handleSubmit = async (event) => {
     event.preventDefault()
     let sendData = [] 
     changes.forEach(column => {
-        if(addressData[column]){
-              sendData = ({...sendData, [column]: addressData[column] })
+        if(notesData[column]){
+              sendData = ({...sendData, [column]: notesData[column] })
             }
         })
     console.log(sendData)
     try {
       const response = await axios({
         method: "post",
-        url: "api/address/edit",
+        url: "api/notes/edit",
         data: sendData
         // headers: { Authorization: `Bearer ${token.token}` },
       });
@@ -75,13 +77,13 @@ useEffect(() => {
   }
 
   const handleDelete = async (event) => { 
-    const deleteData = { PatientID: [event.target.id] }
+    const deleteData = { NoteID: [event.target.id] }
     
     if (window.confirm("Please select Ok to confirm you want to delete this address.  Select Cancel to cancel the delete request.")) {
       try {
         const response = await axios({
           method: "post",
-          url: "api/address/delete",
+          url: "api/notes/delete",
           data: deleteData,
           // headers: { Authorization: `Bearer ${token.token}` },
         });
@@ -105,7 +107,7 @@ useEffect(() => {
             <NavLink to="/add">
               <button>Add</button>
             </NavLink>
-            <button onClick={handleDelete} id={addressData.HealthCardNumberID}>
+            <button onClick={handleDelete} id={notesData.NoteID}>
               Delete
             </button>
           </>
@@ -118,8 +120,8 @@ useEffect(() => {
             type="text"
             className="not-form"
             name="HealthCardNumberID"
-            placeholder={data.HealthCardNumberID}
-            value={data.HealthCardNumberID}
+            placeholder={notesData.PatientID}
+            value={notesData.PatientID}
             disabled={true}
           />
 
@@ -128,8 +130,8 @@ useEffect(() => {
             type="text"
             className={edit ? "not-form" : "form"}
             name="NoteDetail"
-            placeholder={data.NoteDetail}
-            value={data.NoteDetail}
+            placeholder={notesData.NoteDetail}
+            value={notesData.NoteDetail}
             onChange={handleChange}
             readOnly={edit}
           />
@@ -139,8 +141,8 @@ useEffect(() => {
             type="time"
             className={edit ? "not-form" : "form"}
             name="Timestamp"
-            placeholder={data.Timestamp}
-            value={data.Timestamp}
+            placeholder={notesData.Timestamp}
+            value={notesData.Timestamp}
             onChange={handleChange}
             readOnly={edit}
           />

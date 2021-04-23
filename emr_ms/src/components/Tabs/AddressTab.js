@@ -3,11 +3,17 @@ import { PatientContext, LoginContext } from '../sub-components/Context';
 import axios from 'axios';
 import { NavLink, Redirect } from 'react-router-dom';
 
+
+//Add and Delete not setup
+//Need to revise Edit as well so it's editing by AddressID so we don't get dupes
+//Need to make this iterable (ie.  Array that uses .map to display multiple addresses as each patient can have many)
+
 const AddressTab = () => {
 const { postData } = useContext(PatientContext)
 const { adminID } = useContext(LoginContext)
 const [ deleted, setDeleted ] = useState(false)
 const [ addressData, setAddressData ] = useState({
+    AddressID: "",
     PatientID: "",
     AddressLine1: "",
     AddressLine2: "",

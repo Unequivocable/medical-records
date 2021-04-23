@@ -58,11 +58,11 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `emr_group_c`.`Notes` (
   `PatientID` INT NOT NULL,
   `CareProviderID` INT NOT NULL,
-  `Note ID` VARCHAR(45) NOT NULL,
-  `Note Detail` LONGTEXT NULL,
+  `NoteID` VARCHAR(45) NOT NULL,
+  `NoteDetail` LONGTEXT NULL,
   `Timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ActiveFlag` TINYINT NOT NULL DEFAULT 1,
-  PRIMARY KEY (`Note ID`),
+  PRIMARY KEY (`NoteID`),
   INDEX `medical license_idx` (`CareProviderID` ASC) VISIBLE,
   CONSTRAINT `PatientNoteKey`
     FOREIGN KEY (`PatientID`)
@@ -238,9 +238,6 @@ CREATE TABLE IF NOT EXISTS `emr_group_c`.`PatienttoCareProvider` (
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
-CREATE USER 'emr_site' IDENTIFIED BY 'site123';
-
-GRANT SELECT, INSERT, TRIGGER ON TABLE `emr_group_c`.* TO 'emr_site';
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
