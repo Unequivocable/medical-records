@@ -31,6 +31,8 @@ const [ addressDataAdd, setAddressDataAdd ] = useState({
   Category: ""
 })
 
+
+
 useEffect(() => {
     const getData = async () => {
       console.log(refresh)
@@ -38,7 +40,7 @@ useEffect(() => {
         const response = await axios.get('api/address', { params: postData }
         // headers: { Authorization: `Bearer ${token.token}` },
     );
-        console.log(response.data)
+        console.log(response)
         if(response.data[0]) {
           setAddressData(response.data);
         } else {
@@ -64,10 +66,12 @@ useEffect(() => {
 // On all inputs in form (except checkbox) handleChange will add the new value to 'data' and record the changed field in 'changes'
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setAddressData({
-      ...addressData,
-      [name]: value,
-    });
+    const thisIndex = addressData.map((item) => {
+      return item.AddressID;
+    }).indexOf(parseInt(event.target.parentElement.id))
+    let newData = [...addressData]
+    newData[thisIndex][name] = value;
+    setAddressData(newData);
     setChanges([...changes, name]);
   }
 
@@ -82,12 +86,11 @@ useEffect(() => {
 //Submits the form addressData after running 'sendData' to create the final object of changed data.    
   const handleSubmit = async (event) => {
     event.preventDefault()
-    let sendData = [] 
-    changes.forEach(column => {
-        if(addressData[column]){
-              sendData = ({...sendData, [column]: addressData[column] })
-            }
-        })
+    const thisIndex = addressData.map((item) => {
+        return item.AddressID;
+      }).indexOf(parseInt(event.target.id))
+
+    let sendData = addressData[thisIndex]
     console.log(sendData)
     try {
       const response = await axios({
@@ -99,6 +102,7 @@ useEffect(() => {
       console.log(response);
       alert("Data has been updated");
       setChanges([ 'PatientID' ])
+      setEdit(!edit)
     } catch (error) {
       alert(error);
       console.log(error);
@@ -162,7 +166,7 @@ useEffect(() => {
     return (
       <>
         <button onClick={() => setAdd(!add)}>Add New</button>
-
+        {console.log(addressData)}
         {add ? (
           <form className="patient" onSubmit={handleSubmitAdd}>
             <label htmlFor="AddressLine1">Address Line 1:</label>
@@ -244,12 +248,14 @@ useEffect(() => {
           </form>
         ) : null}
 
-        {addressData[0].PatientID ? addressData.map((addressData) => (
+        {/* {addressData[0].PatientID ?  */}
+
+        {addressData.map((addressData) => (
         <div key={addressData.AddressID}>
         <button onClick={handleDelete} id={addressData.AddressID}>Delete</button>
         <button onClick={() => setEdit(!edit)}>Edit</button>
 
-        <form className="patient" onSubmit={handleSubmit}>
+        <form className="patient" id={addressData.AddressID} onSubmit={handleSubmit}>
 
           <label htmlFor="AddressLine1">Address Line 1:</label>
           <input
@@ -330,7 +336,8 @@ useEffect(() => {
 
           {!edit ? <input type="submit" /> : null}
         </form>
-        </div>)) : null} 
+        </div>)) }
+        {/* )) : null}  */}
         
   
       </>

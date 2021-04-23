@@ -298,6 +298,7 @@ router.get("/api/address", (req, res) => {
 })
 
 router.post("/api/address/edit", async (req, res, next) => {
+    console.log(req.body)
     try {
         db.query('UPDATE address SET ? WHERE AddressID = ?', 
         [req.body, req.body.AddressID], function (error, results, fields){
@@ -350,8 +351,8 @@ router.get("/api/emergency", (req, res) => {
 
 router.post("/api/emergency/edit", async (req, res, next) => {
     try {
-        db.query('UPDATE emergencycontact SET ? WHERE PatientID = ?', 
-        [req.body, req.body.PatientID], function (error, results, fields){
+        db.query('UPDATE emergencycontact SET ? WHERE ContactID = ?', 
+        [req.body, req.body.ContactID], function (error, results, fields){
             if (error) throw error;
             console.log("finished emergencycontact update");
             return res.status(200).send(results);
@@ -377,7 +378,7 @@ router.post("/api/emergency/add", async (req, res, next) => {
 
 router.post("/api/emergency/delete", async (req, res, next) => {
     try {
-        db.query("UPDATE emergencycontact SET ActiveFlag = 0 WHERE PatientID = ?",[req.body.PatientID],
+        db.query("UPDATE emergencycontact SET ActiveFlag = 0 WHERE ContactID = ?",[req.body.ContactID],
             function (error, results, fields) {
               if (error) throw error;
               console.log("finished emergencycontact delete update");
