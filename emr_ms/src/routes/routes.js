@@ -265,11 +265,6 @@ router.post("/api/auth", async (req, res, next) => {
         console.log(err);
         next(err);
     }
-    // db.query('SELECT * FROM test', function (error, results, fields){
-    //     if (error) throw error;
-    //     console.log("finished retrieval");
-    //     return res.status(200).send(results);
-    // })
 })
 
 //use to add users through Postman with encrypted password. *Needed to use logIn later*.
@@ -344,8 +339,8 @@ router.post("/api/address/delete", async (req, res, next) => {
 })
 
 router.get("/api/emergency", (req, res) => {
-    db.query('SELECT * FROM emergencycontact SET ? WHERE PatientID = ?', 
-    [req.body.PatientID], function (error, results, fields){
+    db.query('SELECT * FROM emergencycontact WHERE PatientID = ? AND ActiveFlag = 1', 
+    [req.query.PatientID], function (error, results, fields){
         if (error) throw error;
         console.log("finished emergencycontact retrieval");
         return res.status(200).send(results);
@@ -395,8 +390,8 @@ router.post("/api/emergency/delete", async (req, res, next) => {
 })
 
 router.get("/api/notes", (req, res) => {
-    db.query('SELECT * FROM notes SET ? WHERE PatientID = ?', 
-    [req.body.PatientID], function (error, results, fields){
+    db.query('SELECT * FROM notes WHERE PatientID = ? AND ActiveFlag = 1', 
+    [req.query.PatientID], function (error, results, fields){
         if (error) throw error;
         console.log("finished notes retrieval");
         return res.status(200).send(results);
@@ -446,8 +441,8 @@ router.post("/api/notes/delete", async (req, res, next) => {
 })
 
 router.get("/api/summary", (req, res) => {
-    db.query('SELECT * FROM patienthealthsummary SET ? WHERE PatientID = ?', 
-    [req.body.PatientID], function (error, results, fields){
+    db.query('SELECT * FROM patienthealthsummary WHERE PatientID = ? AND ActiveFlag = 1', 
+    [req.query.PatientID], function (error, results, fields){
         if (error) throw error;
         console.log("finished patienthealthsummary retrieval");
         return res.status(200).send(results);

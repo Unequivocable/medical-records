@@ -38,7 +38,7 @@ useEffect(() => {
         const response = await axios.get('api/address', { params: postData }
         // headers: { Authorization: `Bearer ${token.token}` },
     );
-        console.log(response.data[0])
+        console.log(response.data)
         if(response.data[0]) {
           setAddressData(response.data);
         } else {
