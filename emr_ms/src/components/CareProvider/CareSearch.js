@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react';
-import { CareProviderContext, LoginContext } from '../sub-components/Context'
+import { CareProviderContext } from '../sub-components/Context'
 import { NavLink } from "react-router-dom";
 import axios from 'axios';
 
 const CareSearch = () => {
-const { data, setData, setPostData, postData } = useContext(CareProviderContext)
-const { adminID } = useContext(LoginContext)
+const { setPostData } = useContext(CareProviderContext)
+// const { adminID } = useContext(LoginContext)
 const [ search, setSearch ] = useState({
     MedicalLicenseID: "",
     lastName: ""

@@ -1,7 +1,7 @@
 import express from 'express';
 import db from '../database/connection';
 import * as jwt from 'jsonwebtoken'
-const argon2 = require('argon2');
+// const argon2 = require('argon2');
 
 
 const router = express.Router();
@@ -45,12 +45,9 @@ router.post("/api/patient/add", async (req, res, next) => {
 })
 
 router.post("/api/patient/delete", async (req, res, next) => {
-    
-
-// UPDATE patient SET ? WHERE HealthCardNumberID = ?
     try {
         db.query(
-            "UPDATE patient, patienttocareprovider SET patient.ActiveFlag = 0, patienttocareprovider.ActiveFlag = 0 WHERE        patient.HealthCardNumberID = ? AND patienttocareprovider.PatientID = ?;",[req.body.HealthCardNumberID, req.body.HealthCardNumberID],
+            "UPDATE patient, patienttocareprovider SET patient.ActiveFlag = 0, patienttocareprovider.ActiveFlag = 0 WHERE patient.HealthCardNumberID = ? AND patienttocareprovider.PatientID = ?;",[req.body.HealthCardNumberID, req.body.HealthCardNumberID],
             function (error, results, fields) {
               if (error) throw error;
               console.log("finished patient delete update");
@@ -252,7 +249,7 @@ router.post("/api/auth", async (req, res, next) => {
         db.query('SELECT * FROM user WHERE Username = ?', [username], async function(error, results, fields) {
             if (error) throw error
 
-            if(!results[0] || results[0].Password != password){
+            if(!results[0] || results[0].Password !== password){
             //if(!results || !(await argon2.verify(results[0].password, password))){
                 return res.status(401).json({message: "incorrect credentials provided"})
             } else {
@@ -285,6 +282,31 @@ router.post("/api/auth", async (req, res, next) => {
 //     })
     
 // })
+
+// Address table routes 
+
+router.get("/api/address", (req, res) => {
+    db.query('SELECT * FROM address WHERE ActiveFlag = 1 AND PatientID = ?', [req.query.HealthCardNumberID], function (error, results, fields){
+        if (error) throw error;
+        console.log("finished retrieval");
+        return res.status(200).send(results);
+    })
+
+})
+
+router.post("/api/address/edit", async (req, res, next) => {
+    try {
+        db.query('UPDATE address SET ? WHERE PatientID = ?', 
+        [req.body, req.body.PatientID], function (error, results, fields){
+            if (error) throw error;
+            console.log("finished patient update");
+            return res.status(200).send(results);
+        })
+    } catch (error) {
+    console.error(error);
+    next(error);
+    }
+})
 
 
 export default router

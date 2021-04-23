@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { CareProviderContext, LoginContext } from '../sub-components/Context';
+import { CareProviderContext } from '../sub-components/Context';
 import axios from 'axios';
 import { NavLink, Redirect } from 'react-router-dom';
 
@@ -9,7 +9,7 @@ const {
     postData, setPostData, 
     changes, setChanges, 
     edit, setEdit } = useContext(CareProviderContext)
-const { careID, adminID } = useContext(LoginContext)
+// const { careID, adminID } = useContext(LoginContext)
 const [ deleted, setDeleted ] = useState(false)
 
 useEffect(() => {

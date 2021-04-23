@@ -1,14 +1,14 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import Nav from '../sub-components/Nav'
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { CareProviderContext, LoginContext } from '../sub-components/Context'
+import { CareProviderContext } from '../sub-components/Context'
 import CareReadEdit from "./CareReadEdit";
 import CareAdd from './CareAdd'
 import CareSearch from "./CareSearch";
 
 const CareProvider = () => {
   // Imports any of the App level Login variables
-  const { token } = useContext(LoginContext);
+  // const { token } = useContext(LoginContext);
 
   //  Sets ability to edit on or off -- this needs to be in the edit page component so may need to be moved
     const [edit, setEdit] = useState(true);

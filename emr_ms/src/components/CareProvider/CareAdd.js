@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { CareProviderContext, LoginContext } from '../sub-components/Context'
+import { CareProviderContext } from '../sub-components/Context'
 import axios from 'axios';
 import { Redirect, NavLink } from 'react-router-dom'
 
