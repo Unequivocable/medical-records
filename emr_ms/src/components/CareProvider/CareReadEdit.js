@@ -1,7 +1,7 @@
-import React, { useContext, useEffect } from 'react';
-import { CareProviderContext, LoginContext } from '../sub-components/Context';
+import React, { useContext, useEffect, useState } from 'react';
+import { CareProviderContext } from '../sub-components/Context';
 import axios from 'axios';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Redirect } from 'react-router-dom';
 
 const CareReadEdit = () => {
 const { 
@@ -9,8 +9,8 @@ const {
     postData, setPostData, 
     changes, setChanges, 
     edit, setEdit } = useContext(CareProviderContext)
-const { careID, adminID } = useContext(LoginContext)
- 
+// const { careID, adminID } = useContext(LoginContext)
+const [ deleted, setDeleted ] = useState(false)
 
 useEffect(() => {
     const getData = async () => {
@@ -67,10 +67,34 @@ useEffect(() => {
     }
   }
 
+  const handleDelete = async (event) => { 
+    const deleteData = { MedicalLicenseID: [event.target.id] }
+    
+    if (window.confirm("Please select Ok to confirm you want to delete this careprovider.  Select Cancel to cancel the delete request.")) {
+      try {
+        const response = await axios({
+          method: "post",
+          url: "api/careprovider/delete",
+          data: deleteData,
+          // headers: { Authorization: `Bearer ${token.token}` },
+        });
+        console.log(response);
+        alert("Care Provider has been deleted");
+        setDeleted(true)
+      } catch (error) {
+        alert(error);
+        console.log(error);
+      }
+    }
+  }
+
+
     return (
         <>
+        {deleted ? <Redirect to="/careprovider" /> : null}
          <NavLink to="/careadd"><button>Add</button></NavLink>
          <button onClick={()=>setEdit(!edit)}>Edit</button>
+         <button onClick={handleDelete} id={data.MedicalLicenseID}>Delete</button>
          <NavLink to="/careprovider"><button>Search</button></NavLink>
       <form className="patient" onSubmit={handleSubmit}>
 

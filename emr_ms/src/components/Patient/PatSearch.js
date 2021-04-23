@@ -4,12 +4,12 @@ import { NavLink } from "react-router-dom";
 import axios from 'axios';
 
 const PatSearch = () => {
-const { data, setData, setPostData, postData } = useContext(PatientContext)
+const { setPostData } = useContext(PatientContext)
 const { careID, adminID } = useContext(LoginContext)
 const [ search, setSearch ] = useState({
     HealthCardNumberID: "",
     lastName: "",
-    CareProviderID: "",
+    CareProviderID: careID,
 })
 const [ results, setResults ] = useState([{}])
 
@@ -65,7 +65,7 @@ const handleSubmit = async (event) => {
       setSearch({
         HealthCardNumberID: "",
         lastName: "",
-        CareProviderID: "",
+        CareProviderID: careID
     })
     } catch (error) {
       alert(error);
@@ -80,6 +80,7 @@ const handleSubmit = async (event) => {
         ...search,
         CareProviderID: careID,
       });
+    console.log(search)
     }
     try {
       const response = await axios.get('api/p2c/all', {params: search}
@@ -90,8 +91,8 @@ const handleSubmit = async (event) => {
       setSearch({
         HealthCardNumberID: "",
         lastName: "",
-        Phone: "",
-        CareProviderID: "",
+        Phone: "", 
+        CareProviderID: careID
     })
     } catch (error) {
       alert(error);
@@ -108,7 +109,7 @@ const addSwitch = (event) => {
 
     return (
         <>
-          <NavLink to="/add"><button>Add</button></NavLink><br/>
+          {adminID ? <><NavLink to="/add"><button>Add</button></NavLink><br/></> : null}
              <form className="patient" onSubmit={handleSubmit}>
                 <label htmlFor="HealthCardNumberID">Search by Health Card Number</label>
                     <input type="text" className='form' name="HealthCardNumberID" placeholder="Patient Health Card Number" value={search.HealthCardNumberID} onChange={handleChange}/>
