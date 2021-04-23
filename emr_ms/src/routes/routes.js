@@ -340,7 +340,7 @@ router.post("/api/address/delete", async (req, res, next) => {
 
 router.get("/api/emergency", (req, res) => {
     db.query('SELECT * FROM emergencycontact WHERE PatientID = ? AND ActiveFlag = 1', 
-    [req.query.PatientID], function (error, results, fields){
+    [req.query.HealthCardNumberID], function (error, results, fields){
         if (error) throw error;
         console.log("finished emergencycontact retrieval");
         return res.status(200).send(results);
@@ -391,7 +391,7 @@ router.post("/api/emergency/delete", async (req, res, next) => {
 
 router.get("/api/notes", (req, res) => {
     db.query('SELECT * FROM notes WHERE PatientID = ? AND ActiveFlag = 1', 
-    [req.query.PatientID], function (error, results, fields){
+    [req.query.HealthCardNumberID], function (error, results, fields){
         if (error) throw error;
         console.log("finished notes retrieval");
         return res.status(200).send(results);
@@ -442,7 +442,7 @@ router.post("/api/notes/delete", async (req, res, next) => {
 
 router.get("/api/summary", (req, res) => {
     db.query('SELECT * FROM patienthealthsummary WHERE PatientID = ? AND ActiveFlag = 1', 
-    [req.query.PatientID], function (error, results, fields){
+    [req.query.HealthCardNumberID], function (error, results, fields){
         if (error) throw error;
         console.log("finished patienthealthsummary retrieval");
         return res.status(200).send(results);
@@ -479,7 +479,7 @@ router.post("/api/summary/add", async (req, res, next) => {
 
 router.post("/api/summary/delete", async (req, res, next) => {
     try {
-        db.query("UPDATE patienthealthsummary SET ActiveFlag = 0 WHERE HealthSummaryID = ?",[req.body.NoteID],
+        db.query("UPDATE patienthealthsummary SET ActiveFlag = 0 WHERE HealthSummaryID = ?",[req.body.HealthSummaryID],
             function (error, results, fields) {
               if (error) throw error;
               console.log("finished patienthealthsummary delete update");

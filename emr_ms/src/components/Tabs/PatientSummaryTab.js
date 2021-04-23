@@ -137,6 +137,7 @@ useEffect(() => {
         });
         console.log(response);
         alert("Entry has been deleted");
+        setRefresh(!refresh)
       } catch (error) {
         alert(error);
         console.log(error);
