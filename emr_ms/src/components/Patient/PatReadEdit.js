@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { PatientContext, LoginContext } from '../sub-components/Context';
 import axios from 'axios';
-import { NavLink, Redirect } from 'react-router-dom';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
 
 const PatReadEdit = () => {
 const { 
@@ -100,6 +101,7 @@ useEffect(() => {
     }
   }
 
+  
 
 
     return (
@@ -152,6 +154,106 @@ useEffect(() => {
         <input type="checkbox" name="Smoker" className={edit ? 'not-form' : 'form'} onChange={handleChangeCheckbox} checked={data.Smoker} disabled={edit}/>
         {!edit ? <input type="submit" /> : null}
       </form>
+
+      <Tabs selectedIndex={tabIndex} onSelect={index => setTabIndex(index)}>
+      <TabList>
+        <Tab>Address</Tab>
+        <Tab>Emergency Contact</Tab>
+        <Tab>Patient Health Summary</Tab>
+        <Tab>Notes</Tab>
+      </TabList>
+      <TabPanel className="address">
+      <form className="patient" onSubmit={handleSubmit}>
+
+        <label htmlFor="healthCardNum">Health Card Number:</label>
+        <input type="text" className='not-form' name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} disabled={true}/>
+
+        <label htmlFor="AddressLine1">Address Line 1:</label>
+        <input type="text" className={edit ? 'not-form' : 'form'} name="AddressLine1" placeholder={data.AddressLine1} value={data.AddressLine1} onChange={handleChange} readOnly={edit}/>
+
+        <label htmlFor="AddressLine2">Address Line 2:</label>
+        <input type="text" className={edit ? 'not-form' : 'form'} name="AddressLine2" placeholder={data.AddressLine2} value={data.AddressLine2} onChange={handleChange} readOnly={edit}/>
+
+        <label htmlFor="AddressLine3">Address Line 3:</label>
+        <input type="text" className={edit ? 'not-form' : 'form'} name="AddressLine3" placeholder={data.AddressLine3} value={data.AddressLine3} onChange={handleChange} readOnly={edit}/>
+
+        <label htmlFor="City">City:</label>
+        <input type="text" className={edit ? 'not-form' : 'form'} name="City" placeholder={data.City}  value={data.City} onChange={handleChange} readOnly={edit}/>
+
+        <label htmlFor="Province">Province:</label>
+        <input type="text" className={edit ? 'not-form' : 'form'} name="Province" placeholder={data.Province} value={data.Province} onChange={handleChange} readOnly={edit}/>
+
+        <label htmlFor="PostalCode">Postal Code:</label>
+        <input type="text" className={edit ? 'not-form' : 'form'} name="PostalCode" placeholder={data.PostalCode} value={data.PostalCode} onChange={handleChange} readOnly={edit}/>
+
+        <label htmlFor="Category">Category:</label>
+        <input type="text" className={edit ? 'not-form' : 'form'} name="Category" placeholder={data.Category} value={data.Category} onChange={handleChange} readOnly={edit}/>
+
+        
+
+        <input type="submit" />
+      </form>
+      </TabPanel>
+      <TabPanel className="emergencyContact">
+        <form className="patient" onSubmit={handleSubmit}>
+
+        <label htmlFor="healthCardNum">Health Card Number:</label>
+        <input type="text" className='not-form' name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} disabled={true}/>
+
+        <label htmlFor="firstName">First Name:</label>
+        <input type="text" className={edit ? 'not-form' : 'form'} name="firstName" placeholder={data.firstName} value={data.firstName} onChange={handleChange} readOnly={edit}/>
+
+        <label htmlFor="lastName">Last Name:</label>
+        <input type="text" className={edit ? 'not-form' : 'form'} name="lastName" placeholder={data.lastName} value={data.lastName} onChange={handleChange} readOnly={edit}/>
+
+        <label htmlFor="Phone">Phone:</label>
+        <input type="phone" className={edit ? 'not-form' : 'form'} name="Phone" placeholder={data.Phone}  value={data.Phone} onChange={handleChange} readOnly={edit}/>
+
+        <label htmlFor="Email">Email:</label>
+        <input type="email" className={edit ? 'not-form' : 'form'} name="Email" placeholder={data.Email} value={data.Email} onChange={handleChange} readOnly={edit}/>
+
+        <label htmlFor="Relationship">Relationship:</label>
+        <input type="text" className={edit ? 'not-form' : 'form'} name="Relationship" placeholder={data.Relationship}  value={data.Relationship} onChange={handleChange} readOnly={edit}/>
+
+        <input type="submit" />
+        </form>
+      </TabPanel>
+      <TabPanel className="patientHealthSummary">
+        <form className="patient" onSubmit={handleSubmit}>
+
+        <label htmlFor="healthCardNum">Health Card Number:</label>
+        <input type="text" className='not-form' name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} disabled={true}/>
+
+        <label htmlFor="Category">Category:</label>
+        <input type="text" className={edit ? 'not-form' : 'form'} name="Category" placeholder={data.Category} value={data.Category} onChange={handleChange} readOnly={edit}/>
+
+        <label htmlFor="Detail">Detail:</label>
+        <input type="textarea" className={edit ? 'not-form' : 'form'} name="Detail" placeholder={data.Detail} value={data.Detail} onChange={handleChange} readOnly={edit}/>
+
+        <label htmlFor="DetailDate">Detail Date:</label>
+        <input type="date" className={edit ? 'not-form' : 'form'} name="DetailDate" placeholder={data.DetailDate} value={data.DetailDate} onChange={handleChange} readOnly={edit}/>
+
+
+        <input type="submit" />
+        </form>
+      </TabPanel>
+      <TabPanel className="Notes">
+      <form className="patient" onSubmit={handleSubmit}>
+
+        <label htmlFor="healthCardNum">Health Card Number:</label>
+        <input type="text" className='not-form' name="HealthCardNumberID" placeholder={data.HealthCardNumberID} value={data.HealthCardNumberID} disabled={true}/>
+
+        <label htmlFor="NoteDetail">Note:</label>
+        <input type="text" className={edit ? 'not-form' : 'form'} name="NoteDetail" placeholder={data.NoteDetail} value={data.NoteDetail} onChange={handleChange} readOnly={edit}/>
+
+        <label htmlFor="Timestamp">Timestamp:</label>
+        <input type="time" className={edit ? 'not-form' : 'form'} name="Timestamp" placeholder={data.Timestamp} value={data.Timestamp} onChange={handleChange} readOnly={edit}/>
+
+        <input type="submit" />
+        </form>
+      </TabPanel>
+    </Tabs>
+  
 
         </>
     )
