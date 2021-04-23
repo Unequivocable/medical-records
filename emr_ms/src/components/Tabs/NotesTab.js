@@ -12,13 +12,13 @@ const NotesTab = () => {
 const { postData } = useContext(PatientContext)
 const { adminID } = useContext(LoginContext)
 const [ deleted, setDeleted ] = useState(false)
-const [ notesData, setNotesData ] = useState({
+const [ notesData, setNotesData ] = useState([{
     PatientID: "",
     CareProviderID: "",
     NoteID: "",
     NoteDetail: "",
     Timestamp: ""
-  })
+  }])
 const [changes, setChanges] = useState([ 'PatientID' ]);
 const [edit, setEdit] = useState(true);
 
@@ -29,10 +29,10 @@ useEffect(() => {
         const response = await axios.get('api/notes', { params: postData }
         // headers: { Authorization: `Bearer ${token.token}` },
     )
-    .then(function (res) { 
-        console.log(res)
-        setNotesData(res.data);
-      })
+    //.then(function (res) { 
+        console.log(response.data)
+        setNotesData(response.data);
+      //})
     } catch (error) {
         alert(error);
         console.log(error);
