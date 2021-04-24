@@ -2,6 +2,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import { CareProviderContext } from '../sub-components/Context';
 import axios from 'axios';
 import { NavLink, Redirect } from 'react-router-dom';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+import AddressTab from '../Tabs/AddressTab';
+import RevisionDetailsTab from '../Tabs/RevisionDetailsTab';
 
 const CareReadEdit = () => {
 const { 
@@ -11,6 +15,7 @@ const {
     edit, setEdit } = useContext(CareProviderContext)
 // const { careID, adminID } = useContext(LoginContext)
 const [ deleted, setDeleted ] = useState(false)
+const [ tabIndex, setTabIndex ] = useState(0)
 
 useEffect(() => {
     const getData = async () => {
@@ -120,6 +125,19 @@ useEffect(() => {
         
         {!edit ? <input type="submit" /> : null}
       </form>
+
+      <Tabs selectedIndex={tabIndex} onSelect={index => setTabIndex(index)}>
+      <TabList>
+        <Tab>Address</Tab>
+        <Tab>Revision Details</Tab>
+      </TabList>
+      <TabPanel className="address">
+        <AddressTab />
+        </TabPanel>
+      <TabPanel className="RevisionDetails">
+        <RevisionDetailsTab />
+        </TabPanel>
+      </Tabs>
 
         </>
     )
