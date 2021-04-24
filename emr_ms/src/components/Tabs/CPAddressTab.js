@@ -22,7 +22,7 @@ const [edit, setEdit] = useState(true);
 const [add, setAdd] = useState(false);
 const [refresh, setRefresh] = useState(false);
 const [ addressDataAdd, setAddressDataAdd ] = useState({
-  CareProviderID: postData.CareProviderID,
+  CareProviderID: postData.MedicalLicenseID,
   AddressLine1: "",
   AddressLine2: "",
   AddressLine3: "",
@@ -123,6 +123,11 @@ useEffect(() => {
 
   const handleSubmitAdd = async (event) => {
     event.preventDefault()
+let revisionDetails = {
+  CareProviderID: postData.MedicalLicenseID,
+  SuperAdminID: adminID,
+  RevisionDetails: "Added New " + addressDataAdd.Category + " Address"
+}
     console.log(addressDataAdd)
     try {
       const response = await axios({
@@ -131,6 +136,13 @@ useEffect(() => {
         data: addressDataAdd
         // headers: { Authorization: `Bearer ${token.token}` },
       });
+      const rdAdd = await axios({
+        method: "post",
+        url: "api/revision/add",
+        data: revisionDetails
+        // headers: { Authorization: `Bearer ${token.token}` },
+      });
+      console.log(rdAdd)
       console.log(response);
       alert("Data has been updated");
       setAdd(!add)

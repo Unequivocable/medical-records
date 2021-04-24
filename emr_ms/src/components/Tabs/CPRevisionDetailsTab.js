@@ -25,7 +25,7 @@ useEffect(() => {
       offset: page
     }
     try {
-      const response = await axios.get('api/revision', { params: searchDetails }
+      const response = await axios.get('api/revision/cp', { params: searchDetails }
       // headers: { Authorization: `Bearer ${token.token}` },
   );
       console.log(response)
@@ -50,14 +50,9 @@ useEffect(() => {
         <>
             {rdData.map((entry) => (
                  <div key={entry.RevisionID}>
-                   {entry.PatientID ? <> Revision ID: {entry.RevisionID} | {entry.cpFN} {entry.cpLN} made the following changes {entry.RevisionDetails} to {entry.patientFN} {entry.patientLN}'s account on {entry.Timestamp} <br /></> 
+                   {entry.patientLN ? <> Revision ID: {entry.RevisionID} | {entry.cpFN} {entry.cpLN} made the following changes {entry.RevisionDetails} to {entry.patientFN} {entry.patientLN}'s account on {entry.Timestamp} <br /></> 
                    : 
-                   <>Revision ID: {entry.RevisionID} | {entry.cpLN ? `${entry.cpFN} ${entry.cpLN}` : null}{entry.saLN ? `${entry.saFN} ${entry.saLN}` : null} made the following changes: {entry.RevisionDetails} to {entry.patientFN} {entry.patientLN}'s account on {entry.Timestamp} <br /> </>}
-
-
-
-
-                     Revision ID: {entry.RevisionID} | {entry.cpLN ? `${entry.cpFN} ${entry.cpLN}` : null}{entry.saLN ? `${entry.saFN} ${entry.saLN}` : null} made the following changes: {entry.RevisionDetails} to {entry.patientFN} {entry.patientLN}'s account on {entry.Timestamp} <br />
+                   <>Revision ID: {entry.RevisionID} | {entry.saFN} {entry.saLN} made the following changes: {entry.RevisionDetails} to {entry.cpFN} {entry.cpLN}'s account on {entry.Timestamp} <br /> </>}
                 </div>))}
              {page===0 ? null: <button onClick={handlePageBackwards}>Previous Page</button>}
              {rdData.length<10 ? null : <button onClick={handlePageForward}>Next Page</button>}
