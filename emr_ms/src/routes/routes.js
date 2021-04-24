@@ -212,11 +212,18 @@ router.get("/api/cp/all", (req, res) => {
 // Revision Details Read and Adds
 
 router.get("/api/revision", (req, res) => {
-    const query = `SELECT * FROM revisiondetails WHERE PatientID = ${req.query.PatientID} ORDER BY Timestamp DESC LIMIT ${req.query.limit} OFFSET ${req.query.offset}`
-    
+    console.log(req.query)
+    const query = `SELECT revisiondetails.RevisionID, patient.firstName AS patientFN, patient.lastName AS patientLN, revisiondetails.RevisionDetails, revisiondetails.Timestamp, careprovider.firstName AS cpFN, careprovider.lastName AS cpLN, superadmin.firstName AS saFN, superadmin.lastName AS saLN 
+    FROM revisiondetails
+    LEFT JOIN patient ON revisiondetails.PatientID = patient.HealthCardNumberID 
+    LEFT JOIN careprovider ON revisiondetails.CareProviderID = careprovider.MedicalLicenseID
+    LEFT JOIN superadmin ON revisiondetails.SuperAdminID = superadmin.Email
+    WHERE revisiondetails.PatientID = ${req.query.PatientID} ORDER BY Timestamp DESC LIMIT ${req.query.limit} OFFSET ${req.query.offset}`
+
     db.query(query, function (error, results, fields){
         if (error) throw error;
         console.log("finished search");
+        console.log(results);
         return res.status(200).send(results);
     })
 })
@@ -235,8 +242,13 @@ router.post("/api/revision/add", async (req, res, next) => {
 })
 
 router.get("/api/revision/cp", (req, res) => {
-    const query = `SELECT * FROM revisiondetails WHERE CareProviderID = ${req.query.CareProvider} ORDER BY Timestamp DESC LIMIT ${req.query.limit} OFFSET ${req.query.offset}`
-    
+    let query = `SELECT revisiondetails.RevisionID, patient.firstName AS patientFN, patient.lastName AS patientLN, revisiondetails.RevisionDetails, revisiondetails.Timestamp, careprovider.firstName AS cpFN, careprovider.lastName AS cpLN, superadmin.firstName AS saFN, superadmin.lastName AS saLN 
+    FROM revisiondetails
+    LEFT JOIN patient ON revisiondetails.PatientID = patient.HealthCardNumberID 
+    LEFT JOIN careprovider ON revisiondetails.CareProviderID = careprovider.MedicalLicenseID
+    LEFT JOIN superadmin ON revisiondetails.SuperAdminID = superadmin.Email
+    WHERE revisiondetails.CareProviderID = ${req.query.CareProviderID} ORDER BY Timestamp DESC LIMIT ${req.query.limit} OFFSET ${req.query.offset}`
+
     db.query(query, function (error, results, fields){
         if (error) throw error;
         console.log("finished search");
@@ -299,7 +311,6 @@ router.get("/api/address", (req, res) => {
     db.query(query(), function (error, results, fields){
         if (error) throw error;
         console.log("finished address retrieval");
-        console.log(results);
         return res.status(200).send(results);
     })
 
