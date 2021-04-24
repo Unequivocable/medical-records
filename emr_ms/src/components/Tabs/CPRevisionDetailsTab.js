@@ -50,7 +50,14 @@ useEffect(() => {
         <>
             {rdData.map((entry) => (
                  <div key={entry.RevisionID}>
-                    {entry.RevisionID} | {entry.CareProviderID} | {entry.SuperAdminID ? entry.SuperAdminID : null} {entry.PatientID ? entry.PatientID : null} | {entry.RevisionDetails} |  {entry.Timestamp} <br />
+                   {entry.PatientID ? <> Revision ID: {entry.RevisionID} | {entry.cpFN} {entry.cpLN} made the following changes {entry.RevisionDetails} to {entry.patientFN} {entry.patientLN}'s account on {entry.Timestamp} <br /></> 
+                   : 
+                   <>Revision ID: {entry.RevisionID} | {entry.cpLN ? `${entry.cpFN} ${entry.cpLN}` : null}{entry.saLN ? `${entry.saFN} ${entry.saLN}` : null} made the following changes: {entry.RevisionDetails} to {entry.patientFN} {entry.patientLN}'s account on {entry.Timestamp} <br /> </>}
+
+
+
+
+                     Revision ID: {entry.RevisionID} | {entry.cpLN ? `${entry.cpFN} ${entry.cpLN}` : null}{entry.saLN ? `${entry.saFN} ${entry.saLN}` : null} made the following changes: {entry.RevisionDetails} to {entry.patientFN} {entry.patientLN}'s account on {entry.Timestamp} <br />
                 </div>))}
              {page===0 ? null: <button onClick={handlePageBackwards}>Previous Page</button>}
              {rdData.length<10 ? null : <button onClick={handlePageForward}>Next Page</button>}
