@@ -9,11 +9,14 @@ const RevisionDetails = () => {
 const { postData } = useContext(PatientContext)
 const [ rdData, setRdData ] = useState([{
   RevisionID: "",
-  PatientID: "",
-  CareProviderID: "",
-  SuperAdminID: "",
+  patientFN: "",
+  patientLN: "",
   RevisionDetails: "",
-  Timestamp: "" 
+  Timestamp: "",
+  cpFN: "",
+  cpLN: "",
+  saFN: "",
+  saLN: ""
 }])
 const [ page, setPage ] = useState(0)
 
@@ -50,7 +53,7 @@ useEffect(() => {
         <>
             {rdData.map((entry) => (
                  <div key={entry.RevisionID}>
-                    {entry.RevisionID} | {entry.PatientID} | {entry.CareProviderID ? entry.CareProviderID : null}{entry.SuperAdminID ? entry.SuperAdminID : null} | {entry.RevisionDetails} |  {entry.Timestamp} <br />
+                    Revision ID: {entry.RevisionID} | {entry.cpLN ? `${entry.cpFN} ${entry.cpLN}` : null}{entry.saLN ? `${entry.saFN} ${entry.saLN}` : null} made the following changes: {entry.RevisionDetails} to {entry.patientFN} {entry.patientLN}'s account on {entry.Timestamp} <br />
                 </div>))}
              {page===0 ? null: <button onClick={handlePageBackwards}>Previous Page</button>}
              {rdData.length<10 ? null : <button onClick={handlePageForward}>Next Page</button>}

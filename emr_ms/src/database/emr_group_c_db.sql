@@ -56,9 +56,9 @@ ENGINE = InnoDB;
 -- Table `emr_group_c`.`Notes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `emr_group_c`.`Notes` (
+  `NoteID` INT NOT NULL AUTO_INCREMENT,
   `PatientID` INT NOT NULL,
   `CareProviderID` INT NOT NULL,
-  `NoteID` VARCHAR(45) NOT NULL,
   `NoteDetail` LONGTEXT NULL,
   `Timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ActiveFlag` TINYINT NOT NULL DEFAULT 1,
