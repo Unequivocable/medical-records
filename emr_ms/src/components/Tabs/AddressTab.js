@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { PatientContext } from '../sub-components/Context';
+import { LoginContext, PatientContext } from '../sub-components/Context';
 import axios from 'axios';
 
 
 const AddressTab = () => {
 const { postData } = useContext(PatientContext)
+const { careID, adminID } = useContext(LoginContext)
 const [ addressData, setAddressData ] = useState([{
     AddressID: "",
     PatientID: "",
@@ -90,8 +91,25 @@ useEffect(() => {
         return item.AddressID;
       }).indexOf(parseInt(event.target.id))
 
+    let filteredChanges = changes.filter(function(item, index){
+        return changes.indexOf(item) >= index;
+    });
     let sendData = addressData[thisIndex]
-    console.log(sendData)
+    const createRD = (PatientID) => {
+      if(careID){
+      return {
+          PatientID: PatientID,
+          CareProviderID: careID,
+          RevisionDetails: "Updated address fields: " + filteredChanges.filter(field => field !== "PatientID").join(", ")
+        }
+    } else {
+       return {
+        PatientID: PatientID,
+        SuperAdminID: adminID,
+        RevisionDetails: "Updated address fields: " + filteredChanges.filter(field => field !== "PatientID").join(", ")
+      }
+    }}
+    let revisionDetails = createRD(sendData.PatientID);
     try {
       const response = await axios({
         method: "post",
@@ -99,6 +117,13 @@ useEffect(() => {
         data: sendData
         // headers: { Authorization: `Bearer ${token.token}` },
       });
+      const rdAdd = await axios({
+        method: "post",
+        url: "api/revision/add",
+        data: revisionDetails
+        // headers: { Authorization: `Bearer ${token.token}` },
+      });
+      console.log(rdAdd)
       console.log(response);
       alert("Data has been updated");
       setChanges([ 'PatientID' ])
@@ -111,6 +136,21 @@ useEffect(() => {
 
   const handleSubmitAdd = async (event) => {
     event.preventDefault()
+    const createRD = (PatientID) => {
+      if(careID){
+      return {
+          PatientID: PatientID.PatientID,
+          CareProviderID: careID,
+          RevisionDetails: "Added New " + PatientID.Category + " Address"
+        }
+    } else {
+       return {
+        PatientID: PatientID.PatientID,
+        SuperAdminID: adminID,
+        RevisionDetails: "Added New " + PatientID.Category + " Address"
+      }
+    }}
+    let revisionDetails = createRD(addressDataAdd);
     console.log(addressDataAdd)
     try {
       const response = await axios({
@@ -118,7 +158,14 @@ useEffect(() => {
         url: "api/address/add",
         data: addressDataAdd
         // headers: { Authorization: `Bearer ${token.token}` },
+      });    
+      const rdAdd = await axios({
+        method: "post",
+        url: "api/revision/add",
+        data: revisionDetails
+        // headers: { Authorization: `Bearer ${token.token}` },
       });
+      console.log(rdAdd)
       console.log(response);
       alert("Data has been updated");
       setAdd(!add)
@@ -142,7 +189,22 @@ useEffect(() => {
 
   const handleDelete = async (event) => { 
     const deleteData = { AddressID: [event.target.id] }
-    
+    const createRD = (PatientID) => {
+      if(careID){
+      return {
+          PatientID: PatientID,
+          CareProviderID: careID,
+          RevisionDetails: "Deleted Address"
+        }
+    } else {
+       return {
+        PatientID: PatientID,
+        SuperAdminID: adminID,
+        RevisionDetails: "Deleted Address"
+      }
+    }}
+    let revisionDetails = createRD(postData.HealthCardNumberID);
+
     if (window.confirm("Please select Ok to confirm you want to delete this address.  Select Cancel to cancel the delete request.")) {
       try {
         const response = await axios({
@@ -151,6 +213,13 @@ useEffect(() => {
           data: deleteData,
           // headers: { Authorization: `Bearer ${token.token}` },
         });
+        const rdAdd = await axios({
+          method: "post",
+          url: "api/revision/add",
+          data: revisionDetails
+          // headers: { Authorization: `Bearer ${token.token}` },
+        });
+        console.log(rdAdd)
         console.log(response);
         alert("Address has been deleted");
         setRefresh(!refresh)

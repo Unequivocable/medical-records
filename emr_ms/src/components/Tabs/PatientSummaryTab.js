@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { PatientContext } from '../sub-components/Context';
+import { LoginContext, PatientContext } from '../sub-components/Context';
 import axios from 'axios';
 
 
@@ -7,6 +7,7 @@ import axios from 'axios';
 
 const PatientSummaryTab = () => {
 const { postData } = useContext(PatientContext)
+const { adminID, careID } = useContext(LoginContext)
 const [ summaryData, setSummaryData ] = useState([{
     PatientID: "",
     HealthSummaryID: "",
@@ -78,8 +79,26 @@ useEffect(() => {
     const thisIndex = summaryData.map((item) => {
       return item.HealthSummaryID;
     }).indexOf(parseInt(event.target.id))
-
   let sendData = summaryData[thisIndex]
+  let filteredChanges = changes.filter(function(item, index){
+    return changes.indexOf(item) >= index;
+  });
+  const createRD = (PatientID) => {
+    if(careID){
+    return {
+        PatientID: PatientID,
+        CareProviderID: careID,
+        RevisionDetails: "Updated Patient Summary fields: " + filteredChanges.filter(field => field !== "PatientID").join(", ")
+      }
+  } else {
+     return {
+      PatientID: PatientID,
+      SuperAdminID: adminID,
+      RevisionDetails: "Updated Patient Summary fields: " + filteredChanges.filter(field => field !== "PatientID").join(", ")
+    }
+  }}
+  let revisionDetails = createRD(postData.HealthCardNumberID);
+
     console.log(sendData)
     try {
       const response = await axios({
@@ -88,6 +107,13 @@ useEffect(() => {
         data: sendData
         // headers: { Authorization: `Bearer ${token.token}` },
       });
+      const rdAdd = await axios({
+        method: "post",
+        url: "api/revision/add",
+        data: revisionDetails
+        // headers: { Authorization: `Bearer ${token.token}` },
+      });
+      console.log(rdAdd)
       console.log(response);
       alert("Data has been updated");
       setChanges([ 'PatientID' ])
@@ -100,7 +126,21 @@ useEffect(() => {
 
   const handleSubmitAdd = async (event) => {
     event.preventDefault()
-    console.log(summaryDataAdd)
+    const createRD = (PatientID) => {
+      if(careID){
+      return {
+          PatientID: PatientID.PatientID,
+          CareProviderID: careID,
+          RevisionDetails: "Added New " + PatientID.Category + " Patient Summary"
+        }
+    } else {
+       return {
+        PatientID: PatientID.PatientID,
+        SuperAdminID: adminID,
+        RevisionDetails: "Added New " + PatientID.Category + " Patient Summary"
+      }
+    }}
+    let revisionDetails = createRD(summaryDataAdd);
     try {
       const response = await axios({
         method: "post",
@@ -108,6 +148,13 @@ useEffect(() => {
         data: summaryDataAdd
         // headers: { Authorization: `Bearer ${token.token}` },
       });
+      const rdAdd = await axios({
+        method: "post",
+        url: "api/revision/add",
+        data: revisionDetails
+        // headers: { Authorization: `Bearer ${token.token}` },
+      });
+      console.log(rdAdd)
       console.log(response);
       alert("Data has been updated");
       setAdd(!add)
@@ -126,7 +173,21 @@ useEffect(() => {
 
   const handleDelete = async (event) => { 
     const deleteData = { HealthSummaryID: [event.target.id] }
-    
+      const createRD = (PatientID) => {
+        if(careID){
+        return {
+            PatientID: PatientID,
+            CareProviderID: careID,
+            RevisionDetails: "Deleted Patient Summary"
+          }
+      } else {
+         return {
+          PatientID: PatientID,
+          SuperAdminID: adminID,
+          RevisionDetails: "Deleted Patient Summary"
+        }
+      }}
+      let revisionDetails = createRD(postData.HealthCardNumberID);
     if (window.confirm("Please select Ok to confirm you want to delete this entry.  Select Cancel to cancel the delete request.")) {
       try {
         const response = await axios({
@@ -135,6 +196,13 @@ useEffect(() => {
           data: deleteData,
           // headers: { Authorization: `Bearer ${token.token}` },
         });
+        const rdAdd = await axios({
+          method: "post",
+          url: "api/revision/add",
+          data: revisionDetails
+          // headers: { Authorization: `Bearer ${token.token}` },
+        });
+        console.log(rdAdd)
         console.log(response);
         alert("Entry has been deleted");
         setRefresh(!refresh)

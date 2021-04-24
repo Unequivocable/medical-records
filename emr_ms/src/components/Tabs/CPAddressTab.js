@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { CareProviderContext } from '../sub-components/Context';
+import { CareProviderContext, LoginContext } from '../sub-components/Context';
 import axios from 'axios';
 
 
 const CPAddressTab = () => {
 const { postData } = useContext(CareProviderContext)
+const { adminID } = useContext(LoginContext)
 const [ addressData, setAddressData ] = useState([{
     AddressID: "",
     CareProviderID: "",
@@ -84,11 +85,17 @@ useEffect(() => {
 //Submits the form addressData after running 'sendData' to create the final object of changed data.    
   const handleSubmit = async (event) => {
     event.preventDefault()
-    const thisIndex = addressData.map((item) => {
+  const thisIndex = addressData.map((item) => {
       return item.AddressID;
     }).indexOf(parseInt(event.target.id))
-
+  let filteredChanges = changes.filter(function(item, index){
+      return changes.indexOf(item) >= index;
+  });
   let sendData = addressData[thisIndex]
+  let revisionDetails = {        
+    SuperAdminID: adminID,
+    RevisionDetails: "Updated fields: " + filteredChanges.filter(field => field !== "CareProviderID").join(", ")
+  }
   console.log(sendData)
     try {
       const response = await axios({
@@ -97,6 +104,13 @@ useEffect(() => {
         data: sendData
         // headers: { Authorization: `Bearer ${token.token}` },
       });
+      const rdAdd = await axios({
+        method: "post",
+        url: "api/revision/add",
+        data: revisionDetails
+        // headers: { Authorization: `Bearer ${token.token}` },
+      });
+      console.log(rdAdd)
       console.log(response);
       alert("Data has been updated");
       setChanges([ 'CareProviderID' ])
