@@ -219,7 +219,6 @@ router.get("/api/revision", (req, res) => {
         console.log("finished search");
         return res.status(200).send(results);
     })
-
 })
 
 router.post("/api/revision/add", async (req, res, next) => {
@@ -233,6 +232,16 @@ router.post("/api/revision/add", async (req, res, next) => {
     console.error(error);
     next(error);
     }
+})
+
+router.get("/api/revision/cp", (req, res) => {
+    const query = `SELECT * FROM revisiondetails WHERE CareProviderID = ${req.query.CareProvider} ORDER BY Timestamp DESC LIMIT ${req.query.limit} OFFSET ${req.query.offset}`
+    
+    db.query(query, function (error, results, fields){
+        if (error) throw error;
+        console.log("finished search");
+        return res.status(200).send(results);
+    })
 })
 
 // Authorization routes
