@@ -10,7 +10,7 @@ import { NavLink, Redirect } from 'react-router-dom';
 
 const NotesTab = () => {
 const { postData } = useContext(PatientContext)
-const { adminID } = useContext(LoginContext)
+const { careID } = useContext(LoginContext)
 const [ deleted, setDeleted ] = useState(false)
 const [ notesData, setNotesData ] = useState([{
     PatientID: "",
@@ -21,11 +21,20 @@ const [ notesData, setNotesData ] = useState([{
   }])
 const [changes, setChanges] = useState([ 'PatientID' ]);
 const [edit, setEdit] = useState(true);
+const [add, setAdd] = useState(false);
+const [refresh, setRefresh] = useState(false);
+const [ notesDataAdd, setNotesDataAdd ] = useState({
+  PatientID: postData.HealthCardNumberID,
+  CareProviderID: careID,
+  //NoteID: "",
+  NoteDetail: "",
+  //Timestamp: ""
+  })
 
 useEffect(() => {
     const getData = async () => {
       try {
-        console.log(postData)
+        //console.log(postData)
         const response = await axios.get('api/notes', { params: postData }
         // headers: { Authorization: `Bearer ${token.token}` },
     )
@@ -78,10 +87,57 @@ useEffect(() => {
     }
   }
 
+  const handleChangeAdd = (event) => {
+    const { name, value } = event.target;
+    setNotesDataAdd({
+      ...notesDataAdd,
+      [name]: value,
+    });
+    }
+
+    const handleSubmitAdd = async (event) => {
+      event.preventDefault()
+    
+      let revisionDetails = {PatientID: postData.HealthCardNumberID,
+                            CareProviderID: careID,
+                            RevisionDetails: "Added New Note"};
+      try {
+        const response = await axios({
+          method: "post",
+          url: "api/notes/add",
+          data: notesDataAdd
+          // headers: { Authorization: `Bearer ${token.token}` },
+        });    
+        const rdAdd = await axios({
+          method: "post",
+          url: "api/revision/add",
+          data: revisionDetails
+          // headers: { Authorization: `Bearer ${token.token}` },
+        });
+        console.log(rdAdd)
+        console.log(response);
+        alert("Data has been updated");
+        setAdd(!add)
+        setRefresh(!refresh)
+        setNotesDataAdd({
+          PatientID: postData.HealthCardNumberID,
+          CareProviderID: careID,
+          //NoteID: "",
+          NoteDetail: "",
+          //Timestamp: ""
+        })
+      } catch (error) {
+        alert(error);
+        console.log(error);
+      }
+    }
+  
   const handleDelete = async (event) => { 
     const deleteData = { NoteID: [event.target.id] }
-    
-    if (window.confirm("Please select Ok to confirm you want to delete this address.  Select Cancel to cancel the delete request.")) {
+    let revisionDetails = {PatientID: postData.HealthCardNumberID,
+      CareProviderID: careID,
+      RevisionDetails: "Deleted Note " + event.target.id};
+    if (window.confirm("Please select Ok to confirm you want to delete this note.  Select Cancel to cancel the delete request.")) {
       try {
         const response = await axios({
           method: "post",
@@ -89,9 +145,20 @@ useEffect(() => {
           data: deleteData,
           // headers: { Authorization: `Bearer ${token.token}` },
         });
+
+        const rdAdd = await axios({
+          method: "post",
+          url: "api/revision/add",
+          data: revisionDetails
+          // headers: { Authorization: `Bearer ${token.token}` },
+        });
+        console.log(rdAdd)
         console.log(response);
-        alert("Address has been deleted");
-        setDeleted(true)
+        alert("Note has been deleted");
+        setRefresh(!refresh)
+        // console.log(response);
+        // alert("Address has been deleted");
+        // setDeleted(true)
       } catch (error) {
         alert(error);
         console.log(error);
@@ -104,31 +171,38 @@ useEffect(() => {
     return (
       <>
         {/* {deleted ? <Redirect to="/patient" /> : null} */}
-        {adminID ? (
+        {careID ? (
           <>
-            <NavLink to="/add">
-              <button>Add</button>
-            </NavLink>
-            <button onClick={handleDelete} id={notesData.NoteID}>
-              Delete
-            </button>
+            <button onClick={() => setAdd(!add)}>Add New</button>
+
+            {add ? (
+            <form className="patient" onSubmit={handleSubmitAdd}>
+              <label htmlFor="notes">Notes:</label>
+              <input
+                type="textarea"
+                className="form"
+                name="NoteDetail"
+                placeholder=""
+                value={notesDataAdd.NoteDetail}
+                onChange={handleChangeAdd}
+                required
+              />
+
+              <input type="submit" />
+            </form>
+            ) : null}
+
           </>
         ) : null}
-        <button onClick={() => setEdit(!edit)}>Edit</button>
 
         {notesData.map((entry) => (
         <div className="notes" key={entry.NoteID}>
-        <form className="patient" onSubmit={handleSubmit}>
-          <label htmlFor="healthCardNum">Health Card Number:</label>
-          <input
-            type="text"
-            className="not-form"
-            name="HealthCardNumberID"
-            placeholder={entry.PatientID}
-            value={entry.PatientID}
-            disabled={true}
-          />
+          {notesData.NoteID ? <>
+          <button onClick={handleDelete} id={notesData.NoteID}> Delete </button>
+            <button onClick={() => setEdit(!edit)}>Edit</button> </> : null}
 
+        <form className="patient" onSubmit={handleSubmit}>
+          
           <label htmlFor="NoteDetail">Note:</label>
           <input
             type="text"
@@ -142,7 +216,7 @@ useEffect(() => {
 
           <label htmlFor="Timestamp">Timestamp:</label>
           <input
-            type="time"
+            type="text"
             className={edit ? "not-form" : "form"}
             name="Timestamp"
             placeholder={entry.Timestamp}
