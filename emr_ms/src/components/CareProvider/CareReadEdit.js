@@ -1,19 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { CareProviderContext } from '../sub-components/Context';
+import { CareProviderContext, LoginContext } from '../sub-components/Context';
 import axios from 'axios';
 import { NavLink, Redirect } from 'react-router-dom';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
-import AddressTab from '../Tabs/AddressTab';
-import RevisionDetailsTab from '../Tabs/RevisionDetailsTab';
+import CPAddressTab from '../Tabs/CPAddressTab';
+import CPRevisionDetailsTab from '../Tabs/CPRevisionDetailsTab';
 
 const CareReadEdit = () => {
 const { 
     data, setData, 
-    postData, setPostData, 
+    postData, 
     changes, setChanges, 
     edit, setEdit } = useContext(CareProviderContext)
-// const { careID, adminID } = useContext(LoginContext)
+const { adminID } = useContext(LoginContext)
 const [ deleted, setDeleted ] = useState(false)
 const [ tabIndex, setTabIndex ] = useState(0)
 
@@ -43,20 +43,26 @@ useEffect(() => {
     setChanges([...changes, name]);
   }
 
-// To be run before submitting changes.  This looks at 'data' and changed fields in 'changes' and makes a new object 'postData' that only has changed values in it.
-  const sendData = (formData, columns) => {
-      columns.forEach(column => {
-        if(formData[column]){
-          setPostData({...postData, [column]: formData[column] })
-        }
-    })
-  }
-
 
 //Submits the form data after running 'sendData' to create the final object of changed data.    
   const handleSubmit = async (event) => {
     event.preventDefault()
-    sendData(data, changes);
+    let sendData = [] 
+    let filteredChanges = changes.filter(function(item, index){
+      return changes.indexOf(item) >= index;
+    });
+    filteredChanges.forEach(column => {
+        if(data[column]){
+              sendData = ({...sendData, [column]: data[column] })
+            }
+        })
+    
+      let revisionDetails = {
+      CareProviderID: postData.MedicalLicenseID,
+      SuperAdminID: adminID,
+      RevisionDetails: "Updated fields: " + filteredChanges.filter(field => field !== "MedicalLicenseID").join(", ")
+    }
+  
     try {
       const response = await axios({
         method: "post",
@@ -64,8 +70,16 @@ useEffect(() => {
         data: data
         // headers: { Authorization: `Bearer ${token.token}` },
       });
+      const rdAdd = await axios({
+        method: "post",
+        url: "api/revision/add",
+        data: revisionDetails
+        // headers: { Authorization: `Bearer ${token.token}` },
+      });
+      console.log(rdAdd)
       console.log(response);
       alert("Data has been updated");
+      setEdit(!edit)
     } catch (error) {
       alert(error);
       console.log(error);
@@ -119,8 +133,8 @@ useEffect(() => {
         <input type="phone" className={edit ? 'not-form' : 'form'} name="Email" placeholder={data.Email}
         value={data.Email} onChange={handleChange} readOnly={edit}/>
 
-        <label htmlFor="AreaofPractice">AreaofPractice:</label>
-        <input type="email" className={edit ? 'not-form' : 'form'} name="AreaofPractice" placeholder={data.AreaofPractice} value={data.AreaofPractice} onChange={handleChange} readOnly={edit}/>
+        <label htmlFor="AreaofPractice">Area of Practice:</label>
+        <input type="text" className={edit ? 'not-form' : 'form'} name="AreaofPractice" placeholder={data.AreaofPractice} value={data.AreaofPractice} onChange={handleChange} readOnly={edit}/>
 
         
         {!edit ? <input type="submit" /> : null}
@@ -132,10 +146,10 @@ useEffect(() => {
         <Tab>Revision Details</Tab>
       </TabList>
       <TabPanel className="address">
-        <AddressTab />
+        <CPAddressTab />
         </TabPanel>
       <TabPanel className="RevisionDetails">
-        <RevisionDetailsTab />
+        <CPRevisionDetailsTab />
         </TabPanel>
       </Tabs>
 

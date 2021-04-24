@@ -16,7 +16,7 @@ const [ addressData, setAddressData ] = useState([{
     Province: "",
     PostalCode: "",
     Category: ""
-}])
+}]) 
 const [changes, setChanges] = useState([ 'PatientID' ]);
 const [edit, setEdit] = useState(true);
 const [add, setAdd] = useState(false);

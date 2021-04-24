@@ -242,6 +242,7 @@ router.post("/api/revision/add", async (req, res, next) => {
 })
 
 router.get("/api/revision/cp", (req, res) => {
+    console.log(req.query)
     let query = `SELECT revisiondetails.RevisionID, patient.firstName AS patientFN, patient.lastName AS patientLN, revisiondetails.RevisionDetails, revisiondetails.Timestamp, careprovider.firstName AS cpFN, careprovider.lastName AS cpLN, superadmin.firstName AS saFN, superadmin.lastName AS saLN 
     FROM revisiondetails
     LEFT JOIN patient ON revisiondetails.PatientID = patient.HealthCardNumberID 
@@ -302,8 +303,8 @@ router.post("/api/auth", async (req, res, next) => {
 
 router.get("/api/address", (req, res) => {
     let query = () => {
-        if(req.query.CareProviderID) {
-            return `SELECT * FROM address WHERE ActiveFlag = 1 AND CareProviderID = ${req.query.CareProviderID}`
+        if(req.query.MedicalLicenseID) {
+            return `SELECT * FROM address WHERE ActiveFlag = 1 AND CareProviderID = ${req.query.MedicalLicenseID}`
         } else { 
             return `SELECT * FROM address WHERE ActiveFlag = 1 AND PatientID = ${req.query.HealthCardNumberID}`
         }

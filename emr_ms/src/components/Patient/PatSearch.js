@@ -109,26 +109,33 @@ const addSwitch = (event) => {
 
     return (
         <>
-          {adminID ? <><NavLink to="/add"><button>Add</button></NavLink><br/></> : null}
+          {adminID ? <div><NavLink to="/add"><button>Add</button></NavLink><br/></div> : null}
              <form className="patient" onSubmit={handleSubmit}>
+               <div>
                 <label htmlFor="HealthCardNumberID">Search by Health Card Number</label>
                     <input type="text" className='form' name="HealthCardNumberID" placeholder="Patient Health Card Number" value={search.HealthCardNumberID} onChange={handleChange}/>
                 <input type="submit" />
+                </div>
               </form>
               <form className="patient" onSubmit={handleSubmitName}>
+                <div>
                 <label htmlFor="lastName">Search by Patient Last Name</label>
                     <input type="text" className='form' name="lastName" placeholder="Doe" value={search.lastName} onChange={handleChange}/>
-                <input type="submit" />
+                <input type="submit" /></div>
               </form>
+              <div>
               <button onClick={searchAll}>Retrieve all valid Patients</button>
+              </div>
+              <div className="grid">
               {results.map((entry) => (
                  <div key={entry.HealthCardNumberID + entry.CareProviderID}>
-                    <NavLink to="/read" onClick={addSwitch} id={entry.HealthCardNumberID}>{entry.HealthCardNumberID}</NavLink>
+                    <NavLink to="/read" onClick={addSwitch} id={entry.HealthCardNumberID}>{entry.HealthCardNumberID}</NavLink><br/>
                     {entry.firstName} <br />
                     {entry.lastName} <br />
                     {entry.Phone} <br />
                     {entry.CareProviderID} <br />
                 </div>))}
+                </div>
         </>
     )
 }

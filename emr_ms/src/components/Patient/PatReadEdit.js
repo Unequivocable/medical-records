@@ -87,7 +87,6 @@ const handleSubmit = async (event) => {
   }}
   let revisionDetails = createRD(sendData.HealthCardNumberID);
 
-
   console.log(revisionDetails)
   try {
     const response = await axios({
