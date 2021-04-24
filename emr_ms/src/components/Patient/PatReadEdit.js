@@ -16,7 +16,7 @@ const PatReadEdit = () => {
       postData,  
       changes, setChanges, 
       edit, setEdit } = useContext(PatientContext)
-  const { adminID } = useContext(LoginContext)
+  const { adminID, careID } = useContext(LoginContext)
   const [ deleted, setDeleted ] = useState(false)
   const [ tabIndex, setTabIndex ] = useState(0)
 
@@ -62,11 +62,33 @@ useEffect(() => {
 const handleSubmit = async (event) => {
   event.preventDefault()
   let sendData = [] 
-  changes.forEach(column => {
+  let filteredChanges = changes.filter(function(item, index){
+    return changes.indexOf(item) >= index;
+  });
+  filteredChanges.forEach(column => {
       if(data[column]){
             sendData = ({...sendData, [column]: data[column] })
           }
       })
+  
+  const createRD = (PatientID) => {
+    if(careID){
+    return {
+        PatientID: PatientID,
+        CareProviderID: careID,
+        RevisionDetails: "Updated fields: " + filteredChanges.filter(field => field !== "HealthCardNumberID").join(", ")
+      }
+  } else {
+     return {
+      PatientID: PatientID,
+      SuperAdminID: adminID,
+      RevisionDetails: "Updated fields: " + filteredChanges.filter(field => field !== "HealthCardNumberID").join(", ")
+    }
+  }}
+  let revisionDetails = createRD(sendData.HealthCardNumberID);
+
+
+  console.log(revisionDetails)
   try {
     const response = await axios({
       method: "post",
@@ -74,6 +96,13 @@ const handleSubmit = async (event) => {
       data: sendData
       // headers: { Authorization: `Bearer ${token.token}` },
     });
+    const rdAdd = await axios({
+      method: "post",
+      url: "api/revision/add",
+      data: revisionDetails
+      // headers: { Authorization: `Bearer ${token.token}` },
+    });
+    console.log(rdAdd)
     console.log(response);
     alert("Data has been updated");
     setChanges([ 'HealthCardNumberID' ])
@@ -86,7 +115,22 @@ const handleSubmit = async (event) => {
 
   const handleDelete = async (event) => { 
     const deleteData = { HealthCardNumberID: [event.target.id] }
-    
+    const createRD = (PatientID) => {
+      if(careID){
+      return {
+          PatientID: PatientID,
+          CareProviderID: careID,
+          RevisionDetails: "Deleted Patient"
+        }
+    } else {
+       return {
+        PatientID: PatientID,
+        SuperAdminID: adminID,
+        RevisionDetails: "Deleted Patient"
+      }
+    }}
+    let revisionDetails = createRD(event.target.id);
+
     if (window.confirm("Please select Ok to confirm you want to delete this patient.  Select Cancel to cancel the delete request.")) {
       try {
         const response = await axios({
@@ -95,6 +139,13 @@ const handleSubmit = async (event) => {
           data: deleteData,
           // headers: { Authorization: `Bearer ${token.token}` },
         });
+        const rdAdd = await axios({
+          method: "post",
+          url: "api/revision/add",
+          data: revisionDetails
+          // headers: { Authorization: `Bearer ${token.token}` },
+        });
+        console.log(rdAdd)
         console.log(response);
         alert("Patient has been deleted");
         setDeleted(true)

@@ -1,12 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { PatientContext } from '../sub-components/Context'
+import { CareProviderContext } from '../sub-components/Context'
 import axios from 'axios';
 
 //Routes are in routes.js but need to be revised
 // This one is display only so we don't need edit or add -- we just need to ensure the pagination works
 
-const RevisionDetails = () => {
-const { postData } = useContext(PatientContext)
+const CPRevisionDetails = () => {
+const { postData } = useContext(CareProviderContext)
 const [ rdData, setRdData ] = useState([{
   RevisionID: "",
   PatientID: "",
@@ -20,7 +20,7 @@ const [ page, setPage ] = useState(0)
 useEffect(() => {
   const getData = async () => {
     let searchDetails = {
-      PatientID: postData.HealthCardNumberID,
+      CareProviderID: postData.MedicalLicenseID,
       limit: 10,
       offset: page
     }
@@ -50,7 +50,7 @@ useEffect(() => {
         <>
             {rdData.map((entry) => (
                  <div key={entry.RevisionID}>
-                    {entry.RevisionID} | {entry.PatientID} | {entry.CareProviderID ? entry.CareProviderID : null}{entry.SuperAdminID ? entry.SuperAdminID : null} | {entry.RevisionDetails} |  {entry.Timestamp} <br />
+                    {entry.RevisionID} | {entry.CareProviderID} | {entry.SuperAdminID ? entry.SuperAdminID : null} {entry.PatientID ? entry.PatientID : null} | {entry.RevisionDetails} |  {entry.Timestamp} <br />
                 </div>))}
              {page===0 ? null: <button onClick={handlePageBackwards}>Previous Page</button>}
              {rdData.length<10 ? null : <button onClick={handlePageForward}>Next Page</button>}
@@ -59,4 +59,4 @@ useEffect(() => {
     )
 }
 
-export default RevisionDetails;
+export default CPRevisionDetails;

@@ -131,6 +131,7 @@ CREATE TABLE IF NOT EXISTS `emr_group_c`.`Address` (
 -- Table `emr_group_c`.`EmergencyContact`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `emr_group_c`.`EmergencyContact` (
+  `ContactID` INT NOT NULL AUTO_INCREMENT,
   `PatientID` INT NOT NULL,
   `firstName` VARCHAR(255) NOT NULL,
   `lastName` VARCHAR(255) NOT NULL,
@@ -138,8 +139,7 @@ CREATE TABLE IF NOT EXISTS `emr_group_c`.`EmergencyContact` (
   `Email` VARCHAR(45) NULL,
   `Relationship` VARCHAR(45) NOT NULL,
   `ActiveFlag` TINYINT NOT NULL DEFAULT 1,
-  PRIMARY KEY (`PatientID`),
-  UNIQUE INDEX `PatientID_UNIQUE` (`PatientID` ASC) VISIBLE,
+  PRIMARY KEY (`ContactID`),
   CONSTRAINT `PatientContactKey`
     FOREIGN KEY (`PatientID`)
     REFERENCES `emr_group_c`.`Patient` (`HealthCardNumberID`)

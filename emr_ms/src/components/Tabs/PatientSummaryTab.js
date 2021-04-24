@@ -1,14 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { PatientContext } from '../sub-components/Context';
+import { LoginContext, PatientContext } from '../sub-components/Context';
 import axios from 'axios';
 
 
-//Add and Delete haven't been checked
-//Need to make this iterable (ie.  Array that uses .map to display multiple notes as each patient can have many)
 //Need to divide this tab into multiple based on category -- or do a big sort in how we're displaying the data.
 
 const PatientSummaryTab = () => {
 const { postData } = useContext(PatientContext)
+const { adminID, careID } = useContext(LoginContext)
 const [ summaryData, setSummaryData ] = useState([{
     PatientID: "",
     HealthSummaryID: "",
@@ -57,10 +56,12 @@ useEffect(() => {
 // On all inputs in form (except checkbox) handleChange will add the new value to 'data' and record the changed field in 'changes'
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setSummaryData({
-      ...summaryData,
-      [name]: value,
-    });
+    const thisIndex = summaryData.map((item) => {
+      return item.HealthSummaryID;
+    }).indexOf(parseInt(event.target.parentElement.id))
+    let newData = [...summaryData]
+    newData[thisIndex][name] = value;
+    setSummaryData(newData);
     setChanges([...changes, name]);
   }
 
@@ -75,12 +76,29 @@ useEffect(() => {
 //Submits the form summaryData after running 'sendData' to create the final object of changed data.    
   const handleSubmit = async (event) => {
     event.preventDefault()
-    let sendData = [] 
-    changes.forEach(column => {
-        if(summaryData[column]){
-              sendData = ({...sendData, [column]: summaryData[column] })
-            }
-        })
+    const thisIndex = summaryData.map((item) => {
+      return item.HealthSummaryID;
+    }).indexOf(parseInt(event.target.id))
+  let sendData = summaryData[thisIndex]
+  let filteredChanges = changes.filter(function(item, index){
+    return changes.indexOf(item) >= index;
+  });
+  const createRD = (PatientID) => {
+    if(careID){
+    return {
+        PatientID: PatientID,
+        CareProviderID: careID,
+        RevisionDetails: "Updated Patient Summary fields: " + filteredChanges.filter(field => field !== "PatientID").join(", ")
+      }
+  } else {
+     return {
+      PatientID: PatientID,
+      SuperAdminID: adminID,
+      RevisionDetails: "Updated Patient Summary fields: " + filteredChanges.filter(field => field !== "PatientID").join(", ")
+    }
+  }}
+  let revisionDetails = createRD(postData.HealthCardNumberID);
+
     console.log(sendData)
     try {
       const response = await axios({
@@ -89,9 +107,17 @@ useEffect(() => {
         data: sendData
         // headers: { Authorization: `Bearer ${token.token}` },
       });
+      const rdAdd = await axios({
+        method: "post",
+        url: "api/revision/add",
+        data: revisionDetails
+        // headers: { Authorization: `Bearer ${token.token}` },
+      });
+      console.log(rdAdd)
       console.log(response);
       alert("Data has been updated");
       setChanges([ 'PatientID' ])
+      setEdit(!edit)
     } catch (error) {
       alert(error);
       console.log(error);
@@ -100,7 +126,21 @@ useEffect(() => {
 
   const handleSubmitAdd = async (event) => {
     event.preventDefault()
-    console.log(summaryDataAdd)
+    const createRD = (PatientID) => {
+      if(careID){
+      return {
+          PatientID: PatientID.PatientID,
+          CareProviderID: careID,
+          RevisionDetails: "Added New " + PatientID.Category + " Patient Summary"
+        }
+    } else {
+       return {
+        PatientID: PatientID.PatientID,
+        SuperAdminID: adminID,
+        RevisionDetails: "Added New " + PatientID.Category + " Patient Summary"
+      }
+    }}
+    let revisionDetails = createRD(summaryDataAdd);
     try {
       const response = await axios({
         method: "post",
@@ -108,6 +148,13 @@ useEffect(() => {
         data: summaryDataAdd
         // headers: { Authorization: `Bearer ${token.token}` },
       });
+      const rdAdd = await axios({
+        method: "post",
+        url: "api/revision/add",
+        data: revisionDetails
+        // headers: { Authorization: `Bearer ${token.token}` },
+      });
+      console.log(rdAdd)
       console.log(response);
       alert("Data has been updated");
       setAdd(!add)
@@ -126,7 +173,21 @@ useEffect(() => {
 
   const handleDelete = async (event) => { 
     const deleteData = { HealthSummaryID: [event.target.id] }
-    
+      const createRD = (PatientID) => {
+        if(careID){
+        return {
+            PatientID: PatientID,
+            CareProviderID: careID,
+            RevisionDetails: "Deleted Patient Summary"
+          }
+      } else {
+         return {
+          PatientID: PatientID,
+          SuperAdminID: adminID,
+          RevisionDetails: "Deleted Patient Summary"
+        }
+      }}
+      let revisionDetails = createRD(postData.HealthCardNumberID);
     if (window.confirm("Please select Ok to confirm you want to delete this entry.  Select Cancel to cancel the delete request.")) {
       try {
         const response = await axios({
@@ -135,6 +196,13 @@ useEffect(() => {
           data: deleteData,
           // headers: { Authorization: `Bearer ${token.token}` },
         });
+        const rdAdd = await axios({
+          method: "post",
+          url: "api/revision/add",
+          data: revisionDetails
+          // headers: { Authorization: `Bearer ${token.token}` },
+        });
+        console.log(rdAdd)
         console.log(response);
         alert("Entry has been deleted");
         setRefresh(!refresh)
@@ -189,13 +257,14 @@ useEffect(() => {
         ) : null}
 
 
-{summaryData[0].PatientID ? summaryData.map((summaryData) => (
+        {summaryData.map((summaryData) => (
         <div key={summaryData.HealthSummaryID}>
 
+        {summaryData.HealthSummaryID ? <>
         <button onClick={handleDelete} id={summaryData.HealthSummaryID}>Delete</button>
-        <button onClick={() => setEdit(!edit)}>Edit</button>
+        <button onClick={() => setEdit(!edit)}>Edit</button></> : null }
 
-        <form className="patient" onSubmit={handleSubmit}>
+        <form className="patient" id={summaryData.HealthSummaryID} onSubmit={handleSubmit}>
           <label htmlFor="Category">Category:</label>
           <input
             type="text"
@@ -231,7 +300,7 @@ useEffect(() => {
 
           {!edit ? <input type="submit" /> : null}
         </form>
-        </div>)) : null} 
+        </div>))} 
         </>
     );
 }
