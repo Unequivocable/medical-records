@@ -24,7 +24,6 @@ const PatReadEdit = () => {
 useEffect(() => {
     const getData = async () => {
       try {
-        console.log(postData)
         const response = await axios.get('api/patient', { params: postData }
         // headers: { Authorization: `Bearer ${token.token}` },
     );
@@ -86,11 +85,9 @@ const handleSubmit = async (event) => {
     }
   }}
   let revisionDetails = createRD(sendData.HealthCardNumberID);
-
-  console.log(revisionDetails)
   try {
     const response = await axios({
-      method: "post",
+      method: "put",
       url: "api/patient/edit",
       data: sendData
       // headers: { Authorization: `Bearer ${token.token}` },
@@ -133,7 +130,7 @@ const handleSubmit = async (event) => {
     if (window.confirm("Please select Ok to confirm you want to delete this patient.  Select Cancel to cancel the delete request.")) {
       try {
         const response = await axios({
-          method: "post",
+          method: "delete",
           url: "api/patient/delete",
           data: deleteData,
           // headers: { Authorization: `Bearer ${token.token}` },

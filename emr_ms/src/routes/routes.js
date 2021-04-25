@@ -17,7 +17,7 @@ router.get("/api/patient", (req, res) => {
 
 })
 
-router.post("/api/patient/edit", async (req, res, next) => {
+router.put("/api/patient/edit", async (req, res, next) => {
     try {
         db.query('UPDATE patient SET ? WHERE HealthCardNumberID = ?', 
         [req.body, req.body.HealthCardNumberID], function (error, results, fields){
@@ -44,7 +44,7 @@ router.post("/api/patient/add", async (req, res, next) => {
     }
 })
 
-router.post("/api/patient/delete", async (req, res, next) => {
+router.delete("/api/patient/delete", async (req, res, next) => {
     try {
         db.query(
             "UPDATE patient, patienttocareprovider SET patient.ActiveFlag = 0, patienttocareprovider.ActiveFlag = 0 WHERE patient.HealthCardNumberID = ? AND patienttocareprovider.PatientID = ?;",[req.body.HealthCardNumberID, req.body.HealthCardNumberID],
@@ -86,7 +86,7 @@ router.get("/api/careprovider", (req, res) => {
 
 })
 
-router.post("/api/careprovider/edit", async (req, res, next) => {
+router.put("/api/careprovider/edit", async (req, res, next) => {
     try {
         db.query('UPDATE careprovider SET ? WHERE MedicalLicenseID = ?', 
         [req.body, req.body.MedicalLicenseID], function (error, results, fields){
@@ -113,7 +113,7 @@ router.post("/api/careprovider/add", async (req, res, next) => {
     }
 })
 
-router.post("/api/careprovider/delete", async (req, res, next) => {
+router.delete("/api/careprovider/delete", async (req, res, next) => {
     try {
         db.query(
             "UPDATE careprovider, patienttocareprovider SET careprovider.ActiveFlag = 0, patienttocareprovider.ActiveFlag = 0 WHERE careprovider.MedicalLicenseID = ? AND patienttocareprovider.CareProviderID = ?;",[req.body.MedicalLicenseID, req.body.MedicalLicenseID],
@@ -317,7 +317,7 @@ router.get("/api/address", (req, res) => {
 
 })
 
-router.post("/api/address/edit", async (req, res, next) => {
+router.put("/api/address/edit", async (req, res, next) => {
     console.log(req.body)
     try {
         db.query('UPDATE address SET ? WHERE AddressID = ?', 
@@ -345,7 +345,7 @@ router.post("/api/address/add", async (req, res, next) => {
     }
 })
 
-router.post("/api/address/delete", async (req, res, next) => {
+router.delete("/api/address/delete", async (req, res, next) => {
     try {
         db.query('UPDATE address SET ActiveFlag = 0 WHERE AddressID = ?',[req.body.AddressID],
             function (error, results, fields) {
@@ -369,7 +369,7 @@ router.get("/api/emergency", (req, res) => {
 
 })
 
-router.post("/api/emergency/edit", async (req, res, next) => {
+router.put("/api/emergency/edit", async (req, res, next) => {
     try {
         db.query('UPDATE emergencycontact SET ? WHERE ContactID = ?', 
         [req.body, req.body.ContactID], function (error, results, fields){
@@ -396,7 +396,7 @@ router.post("/api/emergency/add", async (req, res, next) => {
     }
 })
 
-router.post("/api/emergency/delete", async (req, res, next) => {
+router.delete("/api/emergency/delete", async (req, res, next) => {
     try {
         db.query("UPDATE emergencycontact SET ActiveFlag = 0 WHERE ContactID = ?",[req.body.ContactID],
             function (error, results, fields) {
@@ -420,7 +420,7 @@ router.get("/api/notes", (req, res) => {
 
 })
 
-router.post("/api/notes/edit", async (req, res, next) => {
+router.put("/api/notes/edit", async (req, res, next) => {
     try {
         db.query('UPDATE notes SET ? WHERE NoteID = ?', 
         [req.body, req.body.NoteID], function (error, results, fields){
@@ -447,19 +447,19 @@ router.post("/api/notes/add", async (req, res, next) => {
     }
 })
 
-router.post("/api/notes/delete", async (req, res, next) => {
-    try {
-        db.query("UPDATE notes SET ActiveFlag = 0 WHERE NoteID = ?",[req.body.NoteID],
-            function (error, results, fields) {
-              if (error) throw error;
-              console.log("finished notes delete update");
-              return res.status(200).send(results);
-        })
-    } catch (error) {
-    console.error(error);
-    next(error);
-    }
-})
+// router.delete("/api/notes/delete", async (req, res, next) => {
+//     try {
+//         db.query("UPDATE notes SET ActiveFlag = 0 WHERE NoteID = ?",[req.body.NoteID],
+//             function (error, results, fields) {
+//               if (error) throw error;
+//               console.log("finished notes delete update");
+//               return res.status(200).send(results);
+//         })
+//     } catch (error) {
+//     console.error(error);
+//     next(error);
+//     }
+// })
 
 router.get("/api/summary", (req, res) => {
     db.query('SELECT * FROM patienthealthsummary WHERE PatientID = ? AND ActiveFlag = 1', 
@@ -471,7 +471,7 @@ router.get("/api/summary", (req, res) => {
 
 })
 
-router.post("/api/summary/edit", async (req, res, next) => {
+router.put("/api/summary/edit", async (req, res, next) => {
     try {
         db.query('UPDATE patienthealthsummary SET ? WHERE HealthSummaryID = ?', 
         [req.body, req.body.NoteID], function (error, results, fields){
@@ -498,7 +498,7 @@ router.post("/api/summary/add", async (req, res, next) => {
     }
 })
 
-router.post("/api/summary/delete", async (req, res, next) => {
+router.delete("/api/summary/delete", async (req, res, next) => {
     try {
         db.query("UPDATE patienthealthsummary SET ActiveFlag = 0 WHERE HealthSummaryID = ?",[req.body.HealthSummaryID],
             function (error, results, fields) {

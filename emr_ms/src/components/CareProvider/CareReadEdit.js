@@ -65,7 +65,7 @@ useEffect(() => {
   
     try {
       const response = await axios({
-        method: "post",
+        method: "put",
         url: "api/careprovider/edit",
         data: data
         // headers: { Authorization: `Bearer ${token.token}` },
@@ -92,7 +92,7 @@ useEffect(() => {
     if (window.confirm("Please select Ok to confirm you want to delete this careprovider.  Select Cancel to cancel the delete request.")) {
       try {
         const response = await axios({
-          method: "post",
+          method: "delete",
           url: "api/careprovider/delete",
           data: deleteData,
           // headers: { Authorization: `Bearer ${token.token}` },

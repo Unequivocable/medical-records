@@ -103,7 +103,7 @@ useEffect(() => {
   let revisionDetails = createRD(sendData.PatientID);
     try {
       const response = await axios({
-        method: "post",
+        method: "put",
         url: "api/emergency/edit",
         data: sendData
         // headers: { Authorization: `Bearer ${token.token}` },
@@ -195,7 +195,7 @@ useEffect(() => {
     if (window.confirm("Please select Ok to confirm you want to delete this Contact.  Select Cancel to cancel the delete request.")) {
       try {
         const response = await axios({
-          method: "post",
+          method: "delete",
           url: "api/emergency/delete",
           data: deleteData,
           // headers: { Authorization: `Bearer ${token.token}` },
