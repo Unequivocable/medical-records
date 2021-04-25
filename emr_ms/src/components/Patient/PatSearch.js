@@ -39,7 +39,7 @@ const handleSubmit = async (event) => {
       setSearch({
         HealthCardNumberID: "",
         lastName: "",
-        CareProviderID: "",
+        CareProviderID: careID,
     })
     } catch (error) {
       alert(error);

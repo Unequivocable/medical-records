@@ -41,15 +41,6 @@ useEffect(() => {
     getData();
   }, [ postData, setNotesData, refresh ]);
 
-// On all inputs in form (except checkbox) handleChange will add the new value to 'data' and record the changed field in 'changes'
-  // const handleChange = (event) => {
-  //   const { name, value } = event.target;
-  //   setNotesData({
-  //     ...notesData,
-  //     [name]: value,
-  //   });
-  //   setChanges([...changes, name]);
-  // }
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -69,19 +60,14 @@ useEffect(() => {
       return item.NoteID;
     }).indexOf(parseInt(event.target.id))
   let sendData = notesData[thisIndex]
-  let filteredChanges = changes.filter(function(item, index){
-    return changes.indexOf(item) >= index;
-  });
   let revisionDetails = {
     PatientID: postData.HealthCardNumberID,
     CareProviderID: careID,
     RevisionDetails: "Updated Note"
   }
-
-    console.log(sendData)
     try {
       const response = await axios({
-        method: "post",
+        method: "put",
         url: "api/notes/edit",
         data: sendData
         // headers: { Authorization: `Bearer ${token.token}` },
@@ -149,39 +135,39 @@ useEffect(() => {
       }
     }
   
-  const handleDelete = async (event) => { 
-    const deleteData = { NoteID: [event.target.id] }
-    let revisionDetails = {PatientID: postData.HealthCardNumberID,
-      CareProviderID: careID,
-      RevisionDetails: "Deleted Note " + event.target.id};
-    if (window.confirm("Please select Ok to confirm you want to delete this note.  Select Cancel to cancel the delete request.")) {
-      try {
-        const response = await axios({
-          method: "post",
-          url: "api/notes/delete",
-          data: deleteData,
-          // headers: { Authorization: `Bearer ${token.token}` },
-        });
+  // const handleDelete = async (event) => { 
+  //   const deleteData = { NoteID: [event.target.id] }
+  //   let revisionDetails = {PatientID: postData.HealthCardNumberID,
+  //     CareProviderID: careID,
+  //     RevisionDetails: "Deleted Note " + event.target.id};
+  //   if (window.confirm("Please select Ok to confirm you want to delete this note.  Select Cancel to cancel the delete request.")) {
+  //     try {
+  //       const response = await axios({
+  //         method: "delete",
+  //         url: "api/notes/delete",
+  //         data: deleteData,
+  //         // headers: { Authorization: `Bearer ${token.token}` },
+  //       });
 
-        const rdAdd = await axios({
-          method: "post",
-          url: "api/revision/add",
-          data: revisionDetails
-          // headers: { Authorization: `Bearer ${token.token}` },
-        });
-        console.log(rdAdd)
-        console.log(response);
-        alert("Note has been deleted");
-        setRefresh(!refresh)
-        // console.log(response);
-        // alert("Address has been deleted");
-        // setDeleted(true)
-      } catch (error) {
-        alert(error);
-        console.log(error);
-      }
-    }
-  }
+  //       const rdAdd = await axios({
+  //         method: "post",
+  //         url: "api/revision/add",
+  //         data: revisionDetails
+  //         // headers: { Authorization: `Bearer ${token.token}` },
+  //       });
+  //       console.log(rdAdd)
+  //       console.log(response);
+  //       alert("Note has been deleted");
+  //       setRefresh(!refresh)
+  //       // console.log(response);
+  //       // alert("Address has been deleted");
+  //       // setDeleted(true)
+  //     } catch (error) {
+  //       alert(error);
+  //       console.log(error);
+  //     }
+  //   }
+  // }
 
 
 
@@ -206,15 +192,15 @@ useEffect(() => {
 
               <input type="submit" />
             </form>
-            ) : null}
+            ) : null }
 
           </>
-        ) : null}
+        ) :  <p>You must be logged in as a Care Provider to write notes.</p>}
 
         {notesData.map((entry) => (
         <div className="notes" key={entry.NoteID}>
           {entry.NoteID ? <>
-          <button onClick={handleDelete} id={entry.NoteID}> Delete </button>
+          {/* <button onClick={handleDelete} id={entry.NoteID}> Delete </button> */}
             <button onClick={() => setEdit(!edit)}>Edit</button> </> : null}
 
         <form className="patient" id={entry.NoteID} onSubmit={handleSubmit}>

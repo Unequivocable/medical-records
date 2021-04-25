@@ -102,7 +102,7 @@ useEffect(() => {
     console.log(sendData)
     try {
       const response = await axios({
-        method: "post",
+        method: "put",
         url: "api/summary/edit",
         data: sendData
         // headers: { Authorization: `Bearer ${token.token}` },
@@ -191,7 +191,7 @@ useEffect(() => {
     if (window.confirm("Please select Ok to confirm you want to delete this entry.  Select Cancel to cancel the delete request.")) {
       try {
         const response = await axios({
-          method: "post",
+          method: "delete",
           url: "api/summary/delete",
           data: deleteData,
           // headers: { Authorization: `Bearer ${token.token}` },

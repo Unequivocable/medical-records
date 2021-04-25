@@ -1,3 +1,5 @@
+USE emr_group_c;
+
 INSERT INTO `emr_group_c`.`patient`
 (`HealthCardNumberID`,
 `firstName`,
